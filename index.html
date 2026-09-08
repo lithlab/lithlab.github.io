@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>李筱慧 · AI Product</title>
+  <meta name="description" content="李筱慧 · 上海 · AI 产品经理。欢迎邮件或微信联系。" />
+  <style>
+    :root {
+      --bg: #f3f4f2; --panel: #ffffff; --side: #fafbfa; --card: #fbfcfb;
+      --ink: #111418; --muted: #5c6570; --line: #e4e7ea; --accent: #0d6e63;
+      --hl: rgba(13, 110, 99, 0.14);
+      --display: "PingFang SC", "Hiragino Sans GB", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      font-size: 14.5px; line-height: 1.75;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    mark { background: var(--hl); color: inherit; padding: 0 .15em; font-weight: 600; }
+    .shell {
+      display: grid; grid-template-columns: 268px 1fr;
+      width: min(1140px, calc(100% - 32px)); margin: 24px auto 64px;
+      background: var(--panel); border: 1px solid var(--line);
+    }
+    aside {
+      padding: 28px 22px; border-right: 1px solid var(--line); background: var(--side);
+      position: sticky; top: 0; align-self: start; max-height: 100vh; overflow: auto;
+    }
+    .portrait {
+      width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 18%;
+      border: 1px solid var(--line); margin-bottom: 16px; display: block;
+    }
+    .kicker { font-size: 11px; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 8px; }
+    h1 { font-family: var(--display); margin: 0 0 8px; font-size: 30px; letter-spacing: 0.1em; font-weight: 600; }
+    .lede { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+    .side-block { margin: 18px 0; }
+    .side-block h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
+    .side-block a, .side-block span { display: block; font-size: 13px; margin: 4px 0; }
+    .side-block span { color: var(--ink); }
+    .side-nav a { color: var(--muted); font-size: 12.5px; margin: 6px 0; }
+    button, a.cta {
+      margin-top: 12px; width: 100%; border: 1px solid var(--accent); background: transparent;
+      color: var(--accent); padding: 8px; font: inherit; font-size: 12px;
+      letter-spacing: 0.1em; cursor: pointer; display: block; text-align: center; box-sizing: border-box;
+    }
+    button:hover, a.cta:hover { background: var(--accent); color: var(--panel); text-decoration: none; }
+    main { padding: 28px 32px 40px; min-width: 0; }
+    section { margin-bottom: 34px; }
+    section > h2 {
+      margin: 0 0 14px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 8px;
+    }
+    .job { margin-bottom: 24px; }
+    .job-head, .case-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+    .job h3, .case h3 { font-family: var(--display); margin: 0; font-size: 16px; }
+    .org { color: var(--ink); font-size: 13.5px; font-weight: 700; margin-top: 2px; }
+    time { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .job p, .case p { margin: 6px 0 0; color: var(--muted); }
+    .job > p.duty {
+      margin: 10px 0 2px; padding: 8px 12px;
+      color: var(--ink); font-weight: 600; font-size: 14px;
+      background: var(--hl); border-left: 3px solid var(--accent);
+    }
+    .job ul, .case ul { margin: 6px 0 0; padding-left: 1.1em; color: var(--muted); }
+    .job li, .case li { margin: 5px 0; }
+    .job strong, .case strong { color: var(--ink); }
+    .case { border: 1px solid var(--line); background: var(--card); padding: 16px 18px; margin-bottom: 14px; }
+    .tag { font-size: 11px; color: var(--accent); white-space: nowrap; }
+    .label { font-size: 11px; letter-spacing: 0.12em; color: var(--accent); margin: 12px 0 4px; font-weight: 600; }
+    .linkbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .linkbar a {
+      font-size: 12.5px; color: var(--muted); padding: 5px 10px;
+      border: 1px solid var(--line); background: var(--card);
+    }
+    .linkbar a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+    #edu { margin-bottom: 28px; }
+    .edu-entry { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+    .edu-entry h3 { margin: 0; font-size: 17px; letter-spacing: 0.04em; }
+    .edu-degree {
+      margin: 2px 0 0; color: var(--muted); font-size: 13px; line-height: 1.35; font-weight: 500;
+    }
+    .edu-degree span { color: var(--accent); font-weight: 600; }
+    .edu-rank {
+      margin: 2px 0 0; color: var(--muted); font-size: 12px; line-height: 1.3;
+    }
+    .edu-rank strong { color: var(--ink); font-weight: 650; }
+    .edu-entry time {
+      margin-top: 3px; color: var(--muted); font-size: 12.5px;
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .edu-courses {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+    }
+    .edu-courses span {
+      font-size: 12px; line-height: 1.2; color: var(--ink);
+      padding: 4px 9px; border: 1px solid var(--line); background: var(--side);
+      letter-spacing: 0.01em;
+    }
+    .skill-block { margin: 0 0 12px; }
+    .skill-block h3 { margin: 0 0 4px; font-size: 12px; color: var(--accent); }
+    .skill-block p { margin: 0; color: var(--muted); font-size: 13.5px; }
+    footer {
+      color: var(--muted); font-size: 12px; display: flex; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px;
+    }
+    @media (max-width: 860px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); }
+      .portrait { width: 132px; }
+      main { padding: 22px 18px 32px; }
+      .job-head, .case-top, .edu-entry { flex-direction: column; gap: 2px; }
+    }
+    @media print {
+      body { background: #fff; color: #111; font-size: 11px; }
+      button, a.cta, .side-nav { display: none; }
+      .shell { width: 100%; margin: 0; border: 0; grid-template-columns: 200px 1fr; background: #fff; }
+      aside { position: static; max-height: none; background: #fff; border-right: 1px solid #ccc; }
+      .case { background: #fff; border-color: #ccc; }
+      mark { background: #eee; }
+      a { color: inherit; text-decoration: none; }
+      .lede, .job p, .case p, .job ul, .case ul, time, .skill-block p, footer { color: #444; }
+      .org { color: #111; }
+      .job > p.duty { background: #eee; border-left-color: #111; color: #111; }
+      .job, .case { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <img class="portrait" src="assets/portrait.jpg" alt="李筱慧" />
+      <div class="kicker">AI PM · SHANGHAI</div>
+      <h1>李筱慧</h1>
+      <p class="lede">上海 · AI 产品经理</p>
+      <p class="lede">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发，虚拟制片（AI 工作流）。</p>
+      <div class="side-block">
+        <h2>联系</h2>
+        <a href="mailto:15000918195@163.com">15000918195@163.com</a>
+        <span>WeChat LithLii</span>
+      </div>
+      <div class="side-block side-nav">
+        <h2>目录</h2>
+        <a href="#edu">教育背景</a>
+        <a href="#exp">工作经历</a>
+        <a href="#skills">个人技能</a>
+        <a href="#work">作品链接</a>
+      </div>
+      <a class="cta" href="mailto:15000918195@163.com">发邮件联系</a>
+      <a href="resume.html" style="display:block;margin-top:10px;font-size:12.5px;color:var(--muted);text-align:center;">完整简历</a>
+    </aside>
+    <main>
+      <section id="edu">
+        <h2>教育背景</h2>
+        <div class="edu-entry">
+          <div>
+            <h3>台湾科技大学</h3>
+            <div class="edu-degree">本科 · 资讯工程 <span>CSIE</span></div>
+            <div class="edu-rank">QS 计算机学科全球 <strong>251–300</strong></div>
+          </div>
+          <time>2021.6 毕业</time>
+        </div>
+        <div class="edu-courses" aria-label="主修课程">
+          <span>Machine Learning</span>
+          <span>Deep Learning</span>
+          <span>Software Engineering</span>
+          <span>Database System</span>
+          <span>Algorithm</span>
+          <span>Compiler</span>
+        </div>
+      </section>
+      <section id="exp">
+        <h2>工作经历</h2>
+        <div class="job">
+          <div class="job-head"><div><h3>资深产品经理</h3><div class="org">英雄电竞 HeroEsports（胤风子内容矩阵 / 虚拟体育事业部）</div></div><time>2024.5 – 2026.5</time></div>
+          <p class="duty">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发，虚拟制片（AI 工作流）。</p>
+          <ul>
+            <li><strong>Workflow 搭建：</strong>前期搭建 ONES，后续搬迁更新至飞书项目。0-1 搭建游戏需求开发、美术资源 2D / 3D、项目工时管理、缺陷修复的完整 workflow。</li>
+            <li>主笔四级结构（<mark>版本规划 → 业务线 → 需求 → 任务</mark>）并推动落地，覆盖约 <mark>30 人</mark>研发组、每周约 10-15 条需求流转与 20 条缺陷、多家供应商。根据部门实际使用情况更新及维护流程，进行全部门使用培训，固定效率复盘，完成整体工作流提效。（案例获得飞书项目社区高级管理员认证）</li>
+            <li><strong>VR 游戏产品：</strong>管理上海部门本地<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">《VTKD》</a>软硬件开发。合作新加坡团队联合运营游戏商业化；从新加坡开发侧接手后，在上海独立拉起需求，一年迭代约 <mark>6 个可玩版本</mark>，新增 <mark>10 个游戏角色、3 个落地场景</mark>。管理《VTKD2》（未上线）内部项目研发及其他开发需求、版本需求、版本更新、会议管理、供应商合作。</li>
+            <li>项目完成巴黎奥运会电竞周展示、新加坡乌节路快闪活动。</li>
+            <li><strong>自研硬件开发管理：</strong><a href="https://axisxr.gg/doc/vtkd-user-manual-unity/" target="_blank" rel="noopener">AXIS</a> 自研惯性动捕硬件，对比测试惯性动捕、摄像头动捕、光学动捕棚三条路线后确定技术路径。</li>
+            <li><strong>虚拟制片 &amp; 产线管理：</strong>内容矩阵技术研发部 PM 负责人，标准化报价流程与项目信息表，加入并规范 AI 在创意前期的可用边界与终稿审核红线。兼顾双部门支援技术中台的约半年，经手实际入账约 <mark>120 万元</mark>（3-4 个项目），优化平均利润率 <mark>45%-50%</mark>，制作提效 <mark>30%+</mark>，人天成本下降 <mark>20%+</mark>。</li>
+          </ul>
+        </div>
+        <div class="job">
+          <div class="job-head"><div><h3>项目经理</h3><div class="org">叠境数字（上海）科技有限公司</div></div><time>2023.7 – 2024.1</time></div>
+          <p class="duty">AIGC 平台（B 端成片），算法项目管理，RAG 知识库问答。</p>
+          <ul>
+            <li><strong>项目管理体系建设：</strong>对接 VP，作为部门项目管理负责人，梳理搭建数字人业务线项目管理体系；负责项目周会内容梳理及阶段成果 review，组织内外部关键节点评审；独立完成项目方案规划、成本评估、项目执行（采购、质量审核、风险管理、干系人沟通）、项目收尾全流程搭建，创建项目资料库。</li>
+            <li><strong>AIGC 平台开发与管理：</strong>PC 端 H5 内容生成平台，负责整个产品模块的需求与排期、用户客制化需求收集、用户反馈数据分析、竞品动态跟踪；负责内部开发优先级排期、功能测试情况及管理后台账号使用数据。</li>
+            <li><strong>算法项目：</strong>【叠境 × SMG 第一财经 3D 数字主播伊可】口型算法迭代。通过历史项目经验建议团队增强口型数据采集与更新验收标准，生成更准确的虚拟人算法口型（landmark → 3D 人脸关键点），组织算法专家 QC 保障迭代效果，在 V3-V4 版本中，虚拟人口型准确度大幅提升。</li>
+            <li>【企业内部 RAG 知识库问答】向量检索 + 大模型作答的制度问答产品，负责切片口径、答与不答的边界、评测集与更新回归机制。</li>
+          </ul>
+        </div>
+        <div class="job">
+          <div class="job-head"><div><h3>项目专员</h3><div class="org">魔珐（上海）信息科技有限公司</div></div><time>2022.3 – 2023.3</time></div>
+          <p class="duty">同期项目组唯一技术背景 PM，短内容项目算法与硬件侧接口人，4-5 个项目并行，千万级交付。</p>
+          <ul>
+            <li><strong>项目管理：</strong>项目 0-1 全生命周期需求梳理、成本及风险评估、排期里程碑把控、项目信息对齐梳理及项目复盘。预估项目产能，拉齐各部门、各环节制作进度，管理客户预期。</li>
+            <li><strong>跨形态数字人交付：</strong>CG、TVC、UE 直播、数字人换头视频等。提前对齐口型、TTS、VC 的能力边界与客户预期。</li>
+            <li>熟悉数字人资产制作、交互逻辑及数字人相关算法，善于进行项目进度梳理。</li>
+            <li><strong>代表项目：</strong>上海移动研究院 &amp; 广西移动数字人、OPPO 商城直播数字人、中金数字人互动大屏（交互指示与点选问答，语料库 200-300 条）、<a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>、<a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a> 等项目。虚拟人翎 Ling <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">兰蔻 CG</a>、<a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">嘉人</a>合作。</li>
+          </ul>
+        </div>
+        <div class="job">
+          <div class="job-head"><div><h3>APM</h3><div class="org">上海蜂果网络科技有限公司</div></div><time>2021.8 – 2022.2</time></div>
+          <ul>
+            <li><strong>游戏美术项目管理：</strong>独立负责 STG 项目<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》</a>、FPS 项目（3D 开放世界）、三国项目（2D）内外部美术制作进度。保证项目热更节点，识别项目风险，保证美术制作质量及时间。构建程序、策划、美术良好沟通渠道，通过敏捷管理（迭代 + 站会 + 看板）缩短制作时间 <mark>30% 以上</mark>。对版号包及测试包进行美术资源规划，建立并维护公司美术部门 TAPD 工作流。</li>
+            <li><strong>供应商管理：</strong>规划定向测试留存方案，2 个月建立超 <mark>300 家</mark>供应商库，为<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电》</a>、<a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener">《王牌机战》</a>、FPS 项目替换高质量原画、Spine 供应商，增加热更版本流水 <mark>20%</mark>。</li>
+            <li>迅速解决项目美术进度问题，进行美术素材预算控制；有大量优秀 2D、3D 美术供应商资源。</li>
+            <li><strong>版权监修 + 版号包资源管理：</strong>《雷电：觉醒》版权监修素材管理，对监修进度进行整体排期规划，保证月度监修提交数量，根据制作效率库保证月度监修提交情况。</li>
+          </ul>
+        </div>
+        <div class="job">
+          <div class="job-head"><div><h3>产品 Intern</h3><div class="org">上海影创信息科技有限公司</div></div><time>2020.7 – 2021.4</time></div>
+          <ul>
+            <li><strong>VR 项目执行：</strong>参与【高通影创联合创新中心】（南昌 VR 产业基地）、【红谷滩 VR 数字化教室】等千万级项目的策划及落地实施，通过对里程碑质量控制，精确保证项目的交付时间。</li>
+            <li><strong>风险识别：</strong>合作销售及产品研发部门分析设备痛点，制定南昌分公司部分产品营销策略；与程序部门沟通，对产品内相关应用提出迭代及流程优化建议。</li>
+            <li><strong>需求分析及用户运营：</strong>与设计、售前部门沟通，制作《K12 行业解决方案》《无人机行业解决方案》《煤炭行业解决方案》；提出相关折页需求，参加相关 ToB 展览，增长产品知名度，后续用户回访量达到 <mark>75%</mark>。</li>
+          </ul>
+        </div>
+      </section>
+      <section id="skills">
+        <h2>个人技能</h2>
+        <div class="skill-block"><h3>AI / 数据</h3><p>Cursor / Codex 日常使用，能借助 AI 产出可交互原型｜Dify 了解｜RAG 知识库问答（切片口径、召回边界、私有化部署取舍）｜评测集与回归机制（人工 0/1 评分 + 转人工边界）｜口型数据采集规格与验收｜Prompt 设计与边界约束｜Python 可读可改｜SQL / PyTorch 了解</p></div>
+        <div class="skill-block"><h3>产品与项目</h3><p>PMP｜飞书项目高级管理员（认证）｜ONES｜TAPD，均有 0-1 搭建研发工作流经验｜Axure｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
+        <div class="skill-block"><h3>制作理解</h3><p>UE 内容产线｜PS / AI / ID｜3ds Max / Maya / ZBrush（资产审核）｜Pr 基础剪辑</p></div>
+        <div class="skill-block"><h3>其他</h3><p>演出经纪人资格证｜CET-6｜广告设计高级（三级）｜3D 打印造型中级（四级）</p></div>
+      </section>
+      <section id="work">
+        <h2>作品与项目链接</h2>
+        <div class="linkbar">
+          <a href="https://virtualtkd.gg/" target="_blank" rel="noopener">VTKD 官网</a>
+          <a href="https://axisxr.gg/doc/vtkd-user-manual-unity/" target="_blank" rel="noopener">AXIS 用户手册</a>
+          <a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>
+          <a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a>
+          <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">虚拟人翎 Ling · 兰蔻 CG</a>
+          <a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">虚拟人翎 Ling · 嘉人</a>
+          <a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》官网</a>
+          <a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener">《王牌机战》TapTap</a>
+        </div>
+      </section>
+      <footer>
+        <div>欢迎邮件或微信联系</div>
+        <div>Building things at the intersection of AI, product &amp; creativity.</div>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
