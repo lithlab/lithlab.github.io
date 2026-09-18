@@ -1,16 +1,21 @@
 <!DOCTYPE html>
+<!-- 公开动效版简历。 -->
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>李筱慧 · AI Product</title>
-  <meta name="description" content="李筱慧 · 上海 · AI 产品经理。欢迎邮件或微信联系。" />
+  <title>李筱慧 · AI PM</title>
+  <meta name="description" content="李筱慧 · AI PM · VR 游戏产品 / 工作流搭建 / 虚拟制片" />
   <style>
     :root {
       --bg: #f3f4f2; --panel: #ffffff; --side: #fafbfa; --card: #fbfcfb;
       --ink: #111418; --muted: #5c6570; --line: #e4e7ea; --accent: #0d6e63;
       --hl: rgba(13, 110, 99, 0.14);
       --display: "PingFang SC", "Hiragino Sans GB", sans-serif;
+      --ease-expo: cubic-bezier(.16, 1, .3, 1);
+      --page-progress: 0;
+      --tab-x: 0px;
+      --tab-w: 0px;
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -19,45 +24,127 @@
       font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
       font-size: 14.5px; line-height: 1.75;
     }
+    .scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 40; height: 2px;
+      width: calc(var(--page-progress) * 100%);
+      background: var(--accent); pointer-events: none;
+    }
+    .grain {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      opacity: .07; mix-blend-mode: multiply;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(17,20,24,.55) 0 1px, transparent 1px 4px),
+        repeating-linear-gradient(90deg, rgba(13,110,99,.4) 0 1px, transparent 1px 5px);
+      background-size: 128px 128px;
+      animation: grain-shift 3.6s steps(4) infinite;
+      image-rendering: pixelated;
+    }
+    @keyframes grain-shift {
+      0% { background-position: 0 0, 0 0; }
+      25% { background-position: -2px 1px, 1px -1px; }
+      50% { background-position: 1px -2px, -1px 2px; }
+      75% { background-position: -1px 0, 2px 1px; }
+      100% { background-position: 0 0, 0 0; }
+    }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
     mark { background: var(--hl); color: inherit; padding: 0 .15em; font-weight: 600; }
     .shell {
+      position: relative; z-index: 1;
       display: grid; grid-template-columns: 268px 1fr;
-      width: min(1140px, calc(100% - 32px)); margin: 24px auto 64px;
+      width: min(1140px, calc(100% - 32px)); margin: 24px auto 32px;
       background: var(--panel); border: 1px solid var(--line);
+    }
+    .m .shell {
+      opacity: 0;
+      animation: shell-in 1.05s var(--ease-expo) .06s forwards;
+    }
+    @keyframes shell-in {
+      to { opacity: 1; }
     }
     aside {
       padding: 28px 22px; border-right: 1px solid var(--line); background: var(--side);
-      position: sticky; top: 0; align-self: start; max-height: 100vh; overflow: auto;
+      align-self: stretch;
+    }
+    .side-pin {
+      position: sticky; top: var(--aside-top, 0px);
+    }
+    .bg-particles {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
     }
     .portrait {
       width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 18%;
       border: 1px solid var(--line); margin-bottom: 16px; display: block;
     }
     .kicker { font-size: 11px; letter-spacing: 0.18em; color: var(--accent); margin-bottom: 8px; }
+    .m .kicker {
+      animation: kicker-in 1.15s var(--ease-expo) .38s both;
+    }
+    @keyframes kicker-in {
+      from { letter-spacing: .42em; opacity: 0; }
+      to { letter-spacing: .18em; opacity: 1; }
+    }
     h1 { font-family: var(--display); margin: 0 0 8px; font-size: 30px; letter-spacing: 0.1em; font-weight: 600; }
     .lede { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
     .side-block { margin: 18px 0; }
     .side-block h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
     .side-block a, .side-block span { display: block; font-size: 13px; margin: 4px 0; }
     .side-block span { color: var(--ink); }
-    .side-nav a { color: var(--muted); font-size: 12.5px; margin: 6px 0; }
-    button, a.cta {
-      margin-top: 12px; width: 100%; border: 1px solid var(--accent); background: transparent;
-      color: var(--accent); padding: 8px; font: inherit; font-size: 12px;
-      letter-spacing: 0.1em; cursor: pointer; display: block; text-align: center; box-sizing: border-box;
+    .side-nav a {
+      color: var(--muted); font-size: 12.5px; margin: 6px 0;
+      position: relative; padding-left: 12px;
+      transition: color .35s var(--ease-expo);
     }
-    button:hover, a.cta:hover { background: var(--accent); color: var(--panel); text-decoration: none; }
+    .side-nav a::before {
+      content: ""; position: absolute; left: 0; top: 50%;
+      width: 4px; height: 4px; background: var(--accent);
+      opacity: 0; transform: translateY(-50%) scale(0);
+      image-rendering: pixelated;
+      transition: opacity .25s, transform .4s var(--ease-expo);
+    }
+    .side-nav a:hover { color: var(--accent); text-decoration: none; }
+    .side-nav a.is-current {
+      color: var(--accent); font-weight: 700; text-decoration: none;
+    }
+    .side-nav a:hover::before, .side-nav a.is-current::before {
+      opacity: 1; transform: translateY(-50%) scale(1);
+    }
+    .side-nav a.is-current::before {
+      width: 3px; height: 11px;
+    }
+    aside button {
+      margin-top: 12px; width: 100%;
+      border: 1px solid var(--accent); background: transparent;
+      color: var(--accent); padding: 8px; font: inherit; font-size: 12px;
+      letter-spacing: 0.1em; cursor: pointer;
+      transition: background .35s var(--ease-expo), color .35s var(--ease-expo), letter-spacing .35s var(--ease-expo);
+    }
+    aside button:hover { background: var(--accent); color: var(--panel); letter-spacing: .16em; }
     main { padding: 28px 32px 40px; min-width: 0; }
     section { margin-bottom: 34px; }
     section > h2 {
-      margin: 0 0 14px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 8px;
+      margin: 0 0 14px; font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); border-bottom: 0; padding-bottom: 8px; position: relative;
     }
+    section > h2::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px;
+      background: var(--line); transform-origin: left;
+    }
+    .m section > h2::after {
+      transform: scaleX(0);
+      transition: transform 1s var(--ease-expo);
+    }
+    .m section.is-in > h2::after { transform: scaleX(1); }
     .job { margin-bottom: 24px; }
     .job-head, .case-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
     .job h3, .case h3 { font-family: var(--display); margin: 0; font-size: 16px; }
+    .job-badge {
+      display: inline-block; vertical-align: 0.18em; margin-left: 6px;
+      font-size: 0.5em; font-weight: 600; font-family: inherit;
+      letter-spacing: 0.06em; line-height: 1.2;
+      color: #2563eb; background: #eff6ff; border: 1px solid #93c5fd;
+      border-radius: 999px; padding: 0.2em 0.7em;
+    }
     .org { color: var(--ink); font-size: 13.5px; font-weight: 700; margin-top: 2px; }
     time { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .job p, .case p { margin: 6px 0 0; color: var(--muted); }
@@ -69,15 +156,91 @@
     .job ul, .case ul { margin: 6px 0 0; padding-left: 1.1em; color: var(--muted); }
     .job li, .case li { margin: 5px 0; }
     .job strong, .case strong { color: var(--ink); }
-    .case { border: 1px solid var(--line); background: var(--card); padding: 16px 18px; margin-bottom: 14px; }
+    .case { border: 1px solid var(--line); background: var(--card); padding: 16px 18px; }
     .tag { font-size: 11px; color: var(--accent); white-space: nowrap; }
+    .case-tabs {
+      display: flex; flex-wrap: wrap; gap: 0; margin: 0 0 12px;
+      border-bottom: 1px solid var(--line); position: relative;
+    }
+    .case-tabs button {
+      margin: 0; border: 0; background: transparent; color: var(--muted);
+      padding: 8px 14px 10px; font: inherit; font-size: 13px;
+      letter-spacing: 0.08em; cursor: pointer;
+      transition: color .35s var(--ease-expo);
+    }
+    .case-tabs button:hover { color: var(--accent); }
+    .case-tabs button[aria-selected="true"] {
+      color: var(--accent); font-weight: 600;
+    }
+    .tab-ink {
+      position: absolute; left: 0; bottom: -1px; height: 2px;
+      width: var(--tab-w); transform: translateX(var(--tab-x));
+      background: var(--accent); pointer-events: none;
+      transition: transform .55s var(--ease-expo), width .55s var(--ease-expo);
+    }
+    .case-stage {
+      display: grid; grid-template-columns: 36px 1fr 36px;
+      gap: 10px; align-items: center;
+    }
+    .case-arrow {
+      width: 36px; height: 36px; padding: 0; margin: 0;
+      border: 0; background: transparent; color: var(--accent);
+      cursor: pointer; display: grid; place-items: center;
+      position: relative;
+      transition: color .3s var(--ease-expo);
+    }
+    .case-arrow:hover { color: var(--ink); }
+    .case-arrow:active { transform: translate(0, 1px); }
+    .case-arrow svg { display: block; image-rendering: pixelated; position: relative; z-index: 1; }
+    .case-arrow .px-ghost {
+      position: absolute; color: var(--accent); opacity: .28; pointer-events: none;
+      transform: translate(2px, 2px);
+    }
+    .case-arrow .px-ghost svg { position: static; }
+    .case-next .px-ghost { transform: translate(-2px, 2px) scaleX(-1); }
+    .case-next > svg { transform: scaleX(-1); }
+    .case-arrow:hover .px-ghost { opacity: .45; }
+    .case-viewport {
+      overflow: hidden; position: relative; min-width: 0;
+      touch-action: pan-y;
+    }
+    .case-viewport::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-conic-gradient(rgba(13,110,99,.22) 0% 25%, transparent 0% 50%);
+      background-size: 6px 6px; opacity: 0; mix-blend-mode: multiply;
+      image-rendering: pixelated;
+    }
+    .case-viewport.is-fx::after { animation: pixel-wipe .55s steps(8) forwards; }
+    @keyframes pixel-wipe {
+      0% { opacity: .16; }
+      100% { opacity: 0; }
+    }
+    .case.is-hidden { display: none; }
+    .case.is-sliding {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: block;
+      transition: transform .62s var(--ease-expo);
+    }
+    .case.from-right { transform: translateX(100%); }
+    .case.from-left { transform: translateX(-100%); }
+    .case.is-out-left { transform: translateX(-100%); }
+    .case.is-out-right { transform: translateX(100%); }
+    .case.in-place { transform: translateX(0); }
     .label { font-size: 11px; letter-spacing: 0.12em; color: var(--accent); margin: 12px 0 4px; font-weight: 600; }
     .linkbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
     .linkbar a {
       font-size: 12.5px; color: var(--muted); padding: 5px 10px;
       border: 1px solid var(--line); background: var(--card);
     }
-    .linkbar a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+    .linkbar a {
+      transition: color .3s var(--ease-expo), border-color .3s var(--ease-expo), transform .35s var(--ease-expo);
+    }
+    .linkbar a:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; transform: translateY(-1px); }
+    .m .reveal {
+      opacity: 0; transform: translateY(14px);
+      transition: opacity .9s var(--ease-expo), transform .9s var(--ease-expo);
+    }
+    .m .reveal.is-in { opacity: 1; transform: none; }
     #edu { margin-bottom: 28px; }
     .edu-entry { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
     .edu-entry h3 { margin: 0; font-size: 17px; letter-spacing: 0.04em; }
@@ -93,14 +256,14 @@
       margin-top: 3px; color: var(--muted); font-size: 12.5px;
       font-variant-numeric: tabular-nums; white-space: nowrap;
     }
-    .edu-courses {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px;
+    .edu-major {
+      margin: 8px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted);
     }
-    .edu-courses span {
-      font-size: 12px; line-height: 1.2; color: var(--ink);
-      padding: 4px 9px; border: 1px solid var(--line); background: var(--side);
-      letter-spacing: 0.01em;
+    .edu-major-label {
+      display: inline-block; margin-right: 8px;
+      font-size: 11px; letter-spacing: 0.12em; color: var(--accent); font-weight: 600;
     }
+    .edu-sep { margin: 0 .42em; color: #c5cbd0; font-weight: 400; }
     .skill-block { margin: 0 0 12px; }
     .skill-block h3 { margin: 0 0 4px; font-size: 12px; color: var(--accent); }
     .skill-block p { margin: 0; color: var(--muted); font-size: 13.5px; }
@@ -108,54 +271,121 @@
       color: var(--muted); font-size: 12px; display: flex; justify-content: space-between;
       gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 14px;
     }
+    .bottom-mods {
+      width: min(1140px, calc(100% - 32px));
+      margin: 4px auto 56px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      align-items: start; position: relative; z-index: 1;
+    }
+    .visitor-widget { min-width: 0; }
+    .visitor-card {
+      border: 1px solid var(--line); background: var(--panel);
+      border-radius: 12px; padding: 10px 10px 8px;
+    }
+    .vw-head {
+      display: flex; align-items: center; gap: 6px;
+      font-weight: 600; font-size: 12px; margin-bottom: 8px;
+    }
+    .vw-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34,197,94,.18);
+    }
+    .vw-mark {
+      margin-left: auto; font-size: 10px; color: var(--accent); letter-spacing: .06em;
+    }
+    .vw-nums { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 4px; }
+    .vw-num { text-align: center; }
+    .vw-num b {
+      display: block; font-size: 14px; line-height: 1.1; color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .vw-num span { font-size: 10px; color: var(--muted); }
+    .vw-map {
+      position: relative; width: 100%; height: 190px; margin: 2px 0 4px;
+    }
+    .vw-since { text-align: center; font-size: 10px; color: var(--muted); margin-top: 4px; opacity: .8; }
+    .vw-meta {
+      display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+      margin-top: 10px; font-size: 11px; color: var(--muted);
+    }
+    .vw-meta b { color: var(--ink); font-weight: 600; }
     @media (max-width: 860px) {
       .shell { grid-template-columns: 1fr; }
       aside { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--line); }
+      .side-pin { position: static; }
       .portrait { width: 132px; }
       main { padding: 22px 18px 32px; }
       .job-head, .case-top, .edu-entry { flex-direction: column; gap: 2px; }
+      .case-stage { grid-template-columns: 28px 1fr 28px; gap: 6px; }
+      .case-arrow { width: 28px; height: 28px; }
+      .case-tabs button { padding: 8px 10px 10px; font-size: 12.5px; }
+      .bottom-mods { grid-template-columns: 1fr; margin-top: 4px; }
+      .vw-num b { font-size: 13px; }
+      .vw-map { height: 140px; }
     }
     @media print {
       body { background: #fff; color: #111; font-size: 11px; }
-      button, a.cta, .side-nav { display: none; }
+      .grain, .scroll-progress, .tab-ink, .px-ghost, .bg-particles, .bottom-mods, .visitor-widget { display: none; }
+      .m .shell, .m .reveal, .m .kicker, .portrait { opacity: 1; transform: none; animation: none; }
+      .m section > h2::after { transform: scaleX(1); }
+      aside button, .side-nav, .case-tabs, .case-arrow { display: none; }
+      .case-stage { display: block; }
+      .case-viewport { overflow: visible; height: auto !important; }
+      .case.is-hidden, .case.is-sliding { display: block; position: static; transform: none; }
+      .case { margin-bottom: 14px; }
       .shell { width: 100%; margin: 0; border: 0; grid-template-columns: 200px 1fr; background: #fff; }
       aside { position: static; max-height: none; background: #fff; border-right: 1px solid #ccc; }
+      .side-pin { position: static; top: auto; }
       .case { background: #fff; border-color: #ccc; }
       mark { background: #eee; }
       a { color: inherit; text-decoration: none; }
-      .lede, .job p, .case p, .job ul, .case ul, time, .skill-block p, footer { color: #444; }
+      .lede, .edu-major, .job p, .case p, .job ul, .case ul, time, .skill-block p, footer { color: #444; }
       .org { color: #111; }
       .job > p.duty { background: #eee; border-left-color: #111; color: #111; }
       .job, .case { break-inside: avoid; }
     }
+    @media (prefers-reduced-motion: reduce) {
+      .grain, .scroll-progress, .bg-particles { display: none; }
+      .m .shell, .m .kicker, .m .reveal, .case.is-sliding, .tab-ink, .portrait,
+      .side-nav a, .side-nav a::before, aside button, .linkbar a, .case-tabs button,
+      .m section > h2::after {
+        animation: none; transition: none; transform: none; opacity: 1;
+      }
+      .m section > h2::after { transform: scaleX(1); }
+    }
   </style>
 </head>
 <body>
+  <script>document.documentElement.classList.add('m');</script>
+  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <canvas class="bg-particles" aria-hidden="true"></canvas>
   <div class="shell">
     <aside>
-      <img class="portrait" src="assets/portrait.jpg" alt="李筱慧" />
-      <div class="kicker">AI PM · SHANGHAI</div>
-      <h1>李筱慧</h1>
-      <p class="lede">上海 · AI 产品经理</p>
-      <p class="lede">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发，虚拟制片（AI 工作流）。</p>
-      <div class="side-block">
-        <h2>联系</h2>
-        <a href="mailto:1164618262@qq.com">1164618262@qq.com</a>
-        <span>WeChat LithLii</span>
+      <div class="side-pin">
+        <img class="portrait" src="assets/portrait.jpg" alt="李筱慧" />
+        <div class="kicker">AI PM · SHANGHAI</div>
+        <h1>李筱慧</h1>
+        <p class="lede">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发，虚拟制片（AI 工作流）。</p>
+        <div class="side-block">
+          <h2>联系</h2>
+          <a href="mailto:1164618262@qq.com">1164618262@qq.com</a>
+          <span>WeChat LithLii</span>
+        </div>
+        <div class="side-block side-nav">
+          <h2>目录</h2>
+          <a href="#edu">教育背景</a>
+          <a href="#exp">工作经历</a>
+          <a href="#cases">主要项目案例</a>
+          <a href="#skills">个人技能</a>
+        </div>
+        <button type="button" onclick="window.print()">打印 / 存 PDF</button>
       </div>
-      <div class="side-block side-nav">
-        <h2>目录</h2>
-        <a href="#edu">教育背景</a>
-        <a href="#exp">工作经历</a>
-        <a href="#skills">个人技能</a>
-        <a href="#work">作品链接</a>
-      </div>
-      <a class="cta" href="mailto:1164618262@qq.com">发邮件联系</a>
     </aside>
     <main>
       <section id="edu">
         <h2>教育背景</h2>
-        <div class="edu-entry">
+        <div class="edu-entry reveal">
           <div>
             <h3>台湾科技大学</h3>
             <div class="edu-degree">本科 · 资讯工程 <span>CSIE</span></div>
@@ -163,20 +393,15 @@
           </div>
           <time>2021.6 毕业</time>
         </div>
-        <div class="edu-courses" aria-label="主修课程">
-          <span>Machine Learning</span>
-          <span>Deep Learning</span>
-          <span>Software Engineering</span>
-          <span>Database System</span>
-          <span>Algorithm</span>
-          <span>Compiler</span>
-        </div>
+        <p class="edu-major reveal">
+          <span class="edu-major-label">主修</span>Machine Learning<span class="edu-sep">·</span>Deep Learning<span class="edu-sep">·</span>Software Engineering<span class="edu-sep">·</span>Database System<span class="edu-sep">·</span>Algorithm<span class="edu-sep">·</span>Compiler
+        </p>
       </section>
       <section id="exp">
         <h2>工作经历</h2>
-        <div class="job">
-          <div class="job-head"><div><h3>资深产品经理</h3><div class="org">英雄电竞 HeroEsports（胤风子内容矩阵 / 虚拟体育事业部）</div></div><time>2024.5 – 2026.5</time></div>
-          <p class="duty">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发，虚拟制片（AI 工作流）。</p>
+        <div class="job reveal">
+          <div class="job-head"><div><h3>资深产品经理</h3><div class="org">英雄电竞 HeroEsports（胤风子内容矩阵 / 战略研发事业部）</div></div><time>2024.5 – 2026.5</time></div>
+          <p class="duty">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发，虚拟制片（AI 工作流）</p>
           <ul>
             <li><strong>Workflow 搭建：</strong>前期搭建 ONES，后续搬迁更新至飞书项目。0-1 搭建游戏需求开发、美术资源 2D / 3D、项目工时管理、缺陷修复的完整 workflow。</li>
             <li>主笔四级结构（<mark>版本规划 → 业务线 → 需求 → 任务</mark>）并推动落地，覆盖约 <mark>30 人</mark>研发组、每周约 10-15 条需求流转与 20 条缺陷、多家供应商。根据部门实际使用情况更新及维护流程，进行全部门使用培训，固定效率复盘，完成整体工作流提效。（案例获得飞书项目社区高级管理员认证）</li>
@@ -186,9 +411,9 @@
             <li><strong>虚拟制片 &amp; 产线管理：</strong>内容矩阵技术研发部 PM 负责人，标准化报价流程与项目信息表，加入并规范 AI 在创意前期的可用边界与终稿审核红线。兼顾双部门支援技术中台的约半年，经手实际入账约 <mark>120 万元</mark>（3-4 个项目），优化平均利润率 <mark>45%-50%</mark>，制作提效 <mark>30%+</mark>，人天成本下降 <mark>20%+</mark>。</li>
           </ul>
         </div>
-        <div class="job">
+        <div class="job reveal">
           <div class="job-head"><div><h3>项目经理</h3><div class="org">叠境数字（上海）科技有限公司</div></div><time>2023.7 – 2024.1</time></div>
-          <p class="duty">AIGC 平台（B 端成片），算法项目管理，RAG 知识库问答。</p>
+          <p class="duty">AIGC 平台（B 端成片），算法项目管理，RAG 知识库问答</p>
           <ul>
             <li><strong>项目管理体系建设：</strong>对接 VP，作为部门项目管理负责人，梳理搭建数字人业务线项目管理体系；负责项目周会内容梳理及阶段成果 review，组织内外部关键节点评审；独立完成项目方案规划、成本评估、项目执行（采购、质量审核、风险管理、干系人沟通）、项目收尾全流程搭建，创建项目资料库。</li>
             <li><strong>AIGC 平台开发与管理：</strong>PC 端 H5 内容生成平台，负责整个产品模块的需求与排期、用户客制化需求收集、用户反馈数据分析、竞品动态跟踪；负责内部开发优先级排期、功能测试情况及管理后台账号使用数据。</li>
@@ -196,9 +421,9 @@
             <li>【企业内部 RAG 知识库问答】向量检索 + 大模型作答的制度问答产品，负责切片口径、答与不答的边界、评测集与更新回归机制。</li>
           </ul>
         </div>
-        <div class="job">
+        <div class="job reveal">
           <div class="job-head"><div><h3>项目专员</h3><div class="org">魔珐（上海）信息科技有限公司</div></div><time>2022.3 – 2023.3</time></div>
-          <p class="duty">同期项目组唯一技术背景 PM，短内容项目算法与硬件侧接口人，4-5 个项目并行，千万级交付。</p>
+          <p class="duty">同期项目组唯一技术背景 PM，短内容项目算法与硬件侧接口人，4-5 个项目并行，千万级交付</p>
           <ul>
             <li><strong>项目管理：</strong>项目 0-1 全生命周期需求梳理、成本及风险评估、排期里程碑把控、项目信息对齐梳理及项目复盘。预估项目产能，拉齐各部门、各环节制作进度，管理客户预期。</li>
             <li><strong>跨形态数字人交付：</strong>CG、TVC、UE 直播、数字人换头视频等。提前对齐口型、TTS、VC 的能力边界与客户预期。</li>
@@ -206,8 +431,9 @@
             <li><strong>代表项目：</strong>上海移动研究院 &amp; 广西移动数字人、OPPO 商城直播数字人、中金数字人互动大屏（交互指示与点选问答，语料库 200-300 条）、<a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>、<a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a> 等项目。虚拟人翎 Ling <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">兰蔻 CG</a>、<a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">嘉人</a>合作。</li>
           </ul>
         </div>
-        <div class="job">
-          <div class="job-head"><div><h3>APM</h3><div class="org">上海蜂果网络科技有限公司</div></div><time>2021.8 – 2022.2</time></div>
+        <div class="job reveal">
+          <div class="job-head"><div><h3>APM 美术项目管理</h3><div class="org">上海蜂果网络科技有限公司</div></div><time>2021.8 – 2022.2</time></div>
+          <p class="duty">游戏美术项目管理，供应商管理&amp;拓展，版权监修，版本分支管理</p>
           <ul>
             <li><strong>游戏美术项目管理：</strong>独立负责 STG 项目<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》</a>、FPS 项目（3D 开放世界）、三国项目（2D）内外部美术制作进度。保证项目热更节点，识别项目风险，保证美术制作质量及时间。构建程序、策划、美术良好沟通渠道，通过敏捷管理（迭代 + 站会 + 看板）缩短制作时间 <mark>30% 以上</mark>。对版号包及测试包进行美术资源规划，建立并维护公司美术部门 TAPD 工作流。</li>
             <li><strong>供应商管理：</strong>规划定向测试留存方案，2 个月建立超 <mark>300 家</mark>供应商库，为<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电》</a>、<a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener">《王牌机战》</a>、FPS 项目替换高质量原画、Spine 供应商，增加热更版本流水 <mark>20%</mark>。</li>
@@ -215,8 +441,8 @@
             <li><strong>版权监修 + 版号包资源管理：</strong>《雷电：觉醒》版权监修素材管理，对监修进度进行整体排期规划，保证月度监修提交数量，根据制作效率库保证月度监修提交情况。</li>
           </ul>
         </div>
-        <div class="job">
-          <div class="job-head"><div><h3>产品 Intern</h3><div class="org">上海影创信息科技有限公司</div></div><time>2020.7 – 2021.4</time></div>
+        <div class="job reveal">
+          <div class="job-head"><div><h3>产品经理 <span class="job-badge">实习</span></h3><div class="org">上海影创信息科技有限公司</div></div><time>2020.7 – 2021.4</time></div>
           <ul>
             <li><strong>VR 项目执行：</strong>参与【高通影创联合创新中心】（南昌 VR 产业基地）、【红谷滩 VR 数字化教室】等千万级项目的策划及落地实施，通过对里程碑质量控制，精确保证项目的交付时间。</li>
             <li><strong>风险识别：</strong>合作销售及产品研发部门分析设备痛点，制定南昌分公司部分产品营销策略；与程序部门沟通，对产品内相关应用提出迭代及流程优化建议。</li>
@@ -224,16 +450,126 @@
           </ul>
         </div>
       </section>
-      <section id="skills">
-        <h2>个人技能</h2>
-        <div class="skill-block"><h3>AI / 数据</h3><p>Cursor / Codex 日常使用，能借助 AI 产出可交互原型｜Dify 了解｜RAG 知识库问答（切片口径、召回边界、私有化部署取舍）｜评测集与回归机制（人工 0/1 评分 + 转人工边界）｜口型数据采集规格与验收｜Prompt 设计与边界约束｜Python 可读可改｜SQL / PyTorch 了解</p></div>
-        <div class="skill-block"><h3>产品与项目</h3><p>PMP｜飞书项目高级管理员（认证）｜ONES｜TAPD，均有 0-1 搭建研发工作流经验｜Axure｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
-        <div class="skill-block"><h3>制作理解</h3><p>UE 内容产线｜PS / AI / ID｜3ds Max / Maya / ZBrush（资产审核）｜Pr 基础剪辑</p></div>
-        <div class="skill-block"><h3>其他</h3><p>演出经纪人资格证｜CET-6｜广告设计高级（三级）｜3D 打印造型中级（四级）</p></div>
-      </section>
-      <section id="work">
-        <h2>作品与项目链接</h2>
-        <div class="linkbar">
+      <section id="cases">
+        <h2>主要项目案例</h2>
+        <div class="case-tabs reveal" role="tablist" aria-label="项目案例">
+          <button type="button" role="tab" id="tab-1" aria-controls="case-1" aria-selected="true">虚拟制片</button>
+          <button type="button" role="tab" id="tab-2" aria-controls="case-2" aria-selected="false">RAG 问答</button>
+          <button type="button" role="tab" id="tab-3" aria-controls="case-3" aria-selected="false">VTKD</button>
+          <button type="button" role="tab" id="tab-4" aria-controls="case-4" aria-selected="false">口型迭代</button>
+          <span class="tab-ink" aria-hidden="true"></span>
+        </div>
+        <div class="case-stage reveal">
+          <button type="button" class="case-arrow case-prev" aria-label="上一件">
+            <span class="px-ghost" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+                <rect x="9" y="1" width="2" height="2" fill="currentColor"/>
+                <rect x="7" y="3" width="2" height="2" fill="currentColor"/>
+                <rect x="5" y="5" width="2" height="2" fill="currentColor"/>
+                <rect x="3" y="7" width="2" height="2" fill="currentColor"/>
+                <rect x="5" y="9" width="2" height="2" fill="currentColor"/>
+                <rect x="7" y="11" width="2" height="2" fill="currentColor"/>
+                <rect x="9" y="13" width="2" height="2" fill="currentColor"/>
+              </svg>
+            </span>
+            <svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" aria-hidden="true">
+              <rect x="9" y="1" width="2" height="2" fill="currentColor"/>
+              <rect x="7" y="3" width="2" height="2" fill="currentColor"/>
+              <rect x="5" y="5" width="2" height="2" fill="currentColor"/>
+              <rect x="3" y="7" width="2" height="2" fill="currentColor"/>
+              <rect x="5" y="9" width="2" height="2" fill="currentColor"/>
+              <rect x="7" y="11" width="2" height="2" fill="currentColor"/>
+              <rect x="9" y="13" width="2" height="2" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="case-viewport">
+        <article class="case" id="case-1" role="tabpanel" aria-labelledby="tab-1">
+          <div class="case-top"><h3>1｜虚拟制片产线：把 AI 边界、报价与修改决策做成同一套产品</h3><span class="tag">英雄电竞 · 内容矩阵技术中台</span></div>
+          <div class="label">问题</div>
+          <p>报价靠人工逐单估算，脚本参考很难对齐，关键信息常常做到一半才补齐；修改反复来回，却看不清客户已经改了几轮、还该不该继续改。</p>
+          <div class="label">产品判断</div>
+          <ul>
+            <li><strong>对外：</strong>标准报价单 + 项目信息表，锁定时长、制作方式（UE / 离线）、是否实拍、交片尺寸、帧率、秒数、是否解算、截止日期、预算、修改次数、A Copy / B Copy 审核节点等字段，统一环节单价与人天公式。重点项目的让利走线下评估的例外流程，而非一单一价。</li>
+            <li><strong>对客户：</strong>每次反馈与制作进度写进同一条记录，让客户看见「又改回了上一版」，必须做出取舍，而不是无限修改。</li>
+            <li><strong>对内：</strong>在飞书铺开工作流 / 审核流 / 制作流与甘特排期，记录预估人天、实际人天、反馈人天用于复盘。</li>
+            <li><strong>AI 边界：</strong>允许用于剧本草稿、脚本参考、分镜与场景氛围、角色三视图，用来对齐描述与反馈；确认方向后，原画优化与模型必须人手完成，保证后续环节拿到真实资产。<mark>最终交付给客户的成片输出不使用 AI</mark>。</li>
+            <li><strong>验收：</strong>内部先审，制片链路与技术负责人共审后再交客户。未通过时先判断是提示词不足还是资产问题，再决定小改或重做。</li>
+          </ul>
+          <div class="label">结果</div>
+          <p>兼顾双部门支援技术中台的约半年内，经手实际入账约 <mark>120 万元</mark>（3-4 个项目），平均利润率 <mark>45%-50%</mark>。引入 AI 的创意前期环节沿用当时内部口径：制作提效 <mark>30%+</mark>、人天成本下降 <mark>20%+</mark>；该口径仅指剧本草稿、脚本参考、分镜氛围、角色三视图，人天基线来自飞书上各环节预估 / 实际 / 反馈人天的复盘。</p>
+        </article>
+        <article class="case is-hidden" id="case-2" role="tabpanel" aria-labelledby="tab-2">
+          <div class="case-top"><h3>2｜企业内部 RAG：能引用才答，答不上转人工</h3><span class="tag">叠境数字 · 面向全体员工的制度问答</span></div>
+          <div class="label">问题</div>
+          <p>入职培训之后，和自己当下无关的制度没人记得，员工往往到真正需要时才去问 HR。答案手册里都有，但检索和确认的成本全部压在 HRBP 身上。</p>
+          <div class="label">技术形态</div>
+          <p>向量检索 + 大模型作答的 RAG 结构。员工手册十几页，拆成 <mark>200-300 条问答对</mark>入向量库，用户提问后语义召回相近条目，模型基于召回内容作答。因涉及员工制度与 HR 敏感信息，数据不出内网：采用<mark>私有化部署</mark>的开源模型（Ollama + LLaMA 系），不调用外部 API。</p>
+          <div class="label">产品判断</div>
+          <ul>
+            <li><strong>切片口径：</strong>手册按问答对切分，而不是按字数硬切，召回质量更可控。</li>
+            <li><strong>答与不答的边界：</strong><mark>能引用手册才答，不许编</mark>；薪酬敏感信息不入库；纠纷类问题直接转 HRBP。</li>
+            <li><strong>兜底策略：</strong>检索不到就明确说明当前无法回答，并指向员工手册中大致可查的位置。</li>
+            <li><strong>评测机制：</strong>以 <mark>100 题</mark>为一集，扩写不同问法打向量库，由我定评分口径、HRBP 按维度打 0/1，本轮迭代评了 3-4 轮。</li>
+            <li><strong>回归机制：</strong>制度更新后先测受影响部分，最后再跑一次全量评测，避免只顾新条目、旧条目回退。</li>
+          </ul>
+          <div class="label">结果</div>
+          <p>员工问到的是 HRBP 确认过的口径，减少「培训完又来问一遍」的重复咨询。输出始终可追溯到手册来源，不产生无依据的回答。</p>
+        </article>
+        <article class="case is-hidden" id="case-3" role="tabpanel" aria-labelledby="tab-3">
+          <div class="case-top"><h3>3｜VTKD / VTKD2：识别不稳时先保证能玩，再让卡点可见</h3><span class="tag">英雄电竞 · Pico 4 / Quest</span></div>
+          <div class="label">问题</div>
+          <p>从新加坡开发侧接手后，上海人手少；识别不准时模型会错乱，活动要跑一整天，实验室测不全那种替换强度。角色制作则容易一拖再拖：期望一个半月完成，原画越改越多，并行节点看不见，到期交不出，但没人能提前说出卡在哪一环。</p>
+          <div class="label">产品判断</div>
+          <ul>
+            <li><strong>硬件路径：</strong>对比惯性动捕、摄像头动捕、光学动捕棚。摄像头场地要求高、精度达不到对战；光学棚单次移动及搭建约数万元级，不适合巡展。结论是小成本继续打磨 <a href="https://axisxr.gg/doc/vtkd-user-manual-unity/" target="_blank" rel="noopener">AXIS</a>。</li>
+            <li><strong>上场策略：</strong>内测识别 bug 多，用「当前最小 bug 包」去活动，不等识别完美。我在上海做版本冻结、应急和资源保障，通常派测试 + 程序去现场。</li>
+            <li><strong>版本筛减：</strong>人手紧张的第一年约 <mark>6 个可玩版本</mark>由我带头推进；<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">VTKD</a> 新增 10 个游戏角色、3 个落地场景。VTKD2 起主控可行性、版本内容与需求筛减，明显完不成的在前中期砍掉。</li>
+            <li><strong>工作流结构：</strong>观察团队真实制作方式后，落地四级结构：<mark>版本规划 → 业务线 → 需求 → 任务</mark>。每个环节由执行方自估工期，超期自动提醒。业务线分美术与策划两条，美术下再分角色与场景。</li>
+            <li><strong>需求流转：</strong>策划内部评审 → 写入当版本 → 三方会对齐 → 程序制作 → 策划验收 → 测试验收 → 待回归 → 灰度 → 合入可玩版本。外包质量早期由我直接审核，后期转为质量监控，由主美统一对外包给出质量意见。</li>
+          </ul>
+          <div class="label">结果</div>
+          <p>完成巴黎奥运会电竞周展示、新加坡乌节路快闪。工作流覆盖研发组约 <mark>30 人</mark>，每周流转约 10-15 条需求与约 20 条缺陷，外部支持 3-4 家外包。</p>
+        </article>
+        <article class="case is-hidden" id="case-4" role="tabpanel" aria-labelledby="tab-4">
+          <div class="case-top"><h3>4｜数字人口型 V3 → V4：先定采集与验收，再对客户承诺</h3><span class="tag">叠境数字 · 第一财经数字主播伊可</span></div>
+          <div class="label">问题</div>
+          <p>3D 口型与 2D 不同：2D 只需嘴部张合，3D 的 a / e / i / o / u 必须在模型上做足。当时线上版本口型幅度不够，客户也反馈不够准，但在改进方案验证之前，不能对外承诺「可以优化」。</p>
+          <div class="label">产品判断</div>
+          <ul>
+            <li>与算法同学讨论后确定 <mark>landmark → 3D 人脸关键点</mark>的方案方向，并定义数据集规格与验收标准。</li>
+            <li>带队完成采集：到电视台选拔真实主播，面部捕捉后筛选各口型表现最佳的采集人，再筛选新闻文稿，完成 3 天约 20 小时的采集。</li>
+            <li>用对比测试回答核心产品问题——是堆更多数据更好，还是只保留特定主播更好；未达标则回头优化数据集，而不是直接换模型。</li>
+            <li>组织算法专家 QC，查看训练指标与对比测试结果，口型观感达到验收标准才放行，不以「算法说改好了」为准。</li>
+          </ul>
+          <div class="label">结果</div>
+          <p>V3 → V4 的观感提升明显超过前三个版本的累计幅度，与直接采集效果相似度 <mark>80% 以上</mark>，客户各部门反馈真实性提升、几乎无返工。该版本为全站升级，第一财经虚拟主播项目直接升级至最新版本，AIGC 数字人平台整体同步，约 3-4 组客户受益。</p>
+        </article>
+          </div>
+          <button type="button" class="case-arrow case-next" aria-label="下一件">
+            <span class="px-ghost" aria-hidden="true">
+              <svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges">
+                <rect x="9" y="1" width="2" height="2" fill="currentColor"/>
+                <rect x="7" y="3" width="2" height="2" fill="currentColor"/>
+                <rect x="5" y="5" width="2" height="2" fill="currentColor"/>
+                <rect x="3" y="7" width="2" height="2" fill="currentColor"/>
+                <rect x="5" y="9" width="2" height="2" fill="currentColor"/>
+                <rect x="7" y="11" width="2" height="2" fill="currentColor"/>
+                <rect x="9" y="13" width="2" height="2" fill="currentColor"/>
+              </svg>
+            </span>
+            <svg viewBox="0 0 16 16" width="16" height="16" shape-rendering="crispEdges" aria-hidden="true">
+              <rect x="9" y="1" width="2" height="2" fill="currentColor"/>
+              <rect x="7" y="3" width="2" height="2" fill="currentColor"/>
+              <rect x="5" y="5" width="2" height="2" fill="currentColor"/>
+              <rect x="3" y="7" width="2" height="2" fill="currentColor"/>
+              <rect x="5" y="9" width="2" height="2" fill="currentColor"/>
+              <rect x="7" y="11" width="2" height="2" fill="currentColor"/>
+              <rect x="9" y="13" width="2" height="2" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div class="label reveal">相关项目链接</div>
+        <div class="linkbar reveal">
           <a href="https://virtualtkd.gg/" target="_blank" rel="noopener">VTKD 官网</a>
           <a href="https://axisxr.gg/doc/vtkd-user-manual-unity/" target="_blank" rel="noopener">AXIS 用户手册</a>
           <a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>
@@ -244,11 +580,502 @@
           <a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener">《王牌机战》TapTap</a>
         </div>
       </section>
-      <footer>
-        <div>欢迎邮件或微信联系</div>
+      <section id="skills">
+        <h2>个人技能</h2>
+        <div class="skill-block reveal"><h3>AI / 数据</h3><p>Cursor / Codex 日常使用，能借助 AI 产出可交互原型｜Dify 了解｜RAG 知识库问答（切片口径、召回边界、私有化部署取舍）｜评测集与回归机制（人工 0/1 评分 + 转人工边界）｜口型数据采集规格与验收｜Prompt 设计与边界约束｜Python 可读可改｜SQL / PyTorch 了解</p></div>
+        <div class="skill-block reveal"><h3>产品与项目</h3><p>PMP｜飞书项目高级管理员（认证）｜ONES｜TAPD，均有 0-1 搭建研发工作流经验｜Axure｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
+        <div class="skill-block reveal"><h3>制作理解</h3><p>UE 内容产线｜PS / AI / ID｜3ds Max / Maya / ZBrush（资产审核）｜Pr 基础剪辑</p></div>
+        <div class="skill-block reveal"><h3>其他</h3><p>演出经纪人资格证｜CET-6｜广告设计高级（三级）｜3D 打印造型中级（四级）</p></div>
+      </section>
+      <footer class="reveal">
+        <div>Vibecoding 简历链接及项目合集</div>
         <div>Building things at the intersection of AI, product &amp; creativity.</div>
       </footer>
     </main>
   </div>
+  <div class="bottom-mods">
+    <div class="visitor-widget reveal" aria-label="Visitors">
+      <div class="visitor-card">
+        <div class="vw-head"><span class="vw-dot" aria-hidden="true"></span> Visitors <span class="vw-mark" id="vw-mark" hidden>已排除本机</span></div>
+        <div class="vw-nums">
+          <div class="vw-num"><b id="vw-total">—</b><span>Total</span></div>
+          <div class="vw-num"><b id="vw-unique">—</b><span>Unique</span></div>
+          <div class="vw-num"><b id="vw-month">—</b><span>This month</span></div>
+          <div class="vw-num"><b id="vw-today">—</b><span>Today</span></div>
+        </div>
+        <div class="vw-map" id="vw-map" aria-hidden="true"></div>
+        <div class="vw-since" id="vw-since">Tracking since 2026-09-16 UTC</div>
+      </div>
+      <div class="vw-meta">
+        <span>Visiting from: <b id="vw-from">定位中…</b></span>
+        <span>Content last updated: Sep 16, 2026</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var rootEl = document.documentElement;
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      var shell = document.querySelector('.shell');
+      var aside = document.querySelector('.shell > aside');
+      var pin = document.querySelector('.side-pin');
+      var mqNarrow = window.matchMedia('(max-width: 860px)');
+
+      function onScroll() {
+        var y = window.scrollY || 0;
+        var max = Math.max(rootEl.scrollHeight - window.innerHeight, 1);
+        var progress = Math.min(1, Math.max(0, y / max));
+        rootEl.style.setProperty('--page-progress', String(progress));
+
+        if (!reduce && pin && aside && !mqNarrow.matches) {
+          var pinH = pin.offsetHeight;
+          var padBottom = parseFloat(getComputedStyle(aside).paddingBottom) || 0;
+          var dock = aside.getBoundingClientRect().bottom - padBottom - pinH;
+          var room = Math.max(0, window.innerHeight - pinH);
+          var shift = Math.max(0, Math.min(dock, room)) * progress;
+          rootEl.style.setProperty('--aside-top', shift.toFixed(1) + 'px');
+        } else {
+          rootEl.style.setProperty('--aside-top', '0px');
+        }
+
+        var current = 'edu';
+        ['edu', 'exp', 'cases', 'skills'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el && el.getBoundingClientRect().top < 160) current = id;
+        });
+        document.querySelectorAll('.side-nav a').forEach(function (a) {
+          a.classList.toggle('is-current', a.getAttribute('href') === '#' + current);
+        });
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      onScroll();
+
+      window.addEventListener('load', function () {
+        if (!location.hash) return;
+        var el = document.getElementById(location.hash.slice(1));
+        if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' });
+      });
+
+      if (reduce) {
+        document.querySelectorAll('section, .reveal').forEach(function (el) { el.classList.add('is-in'); });
+      } else {
+        document.querySelectorAll('section').forEach(function (sec) {
+          sec.querySelectorAll('.reveal').forEach(function (el, i) {
+            el.style.transitionDelay = (i * 0.07) + 's';
+          });
+        });
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) {
+              en.target.classList.add('is-in');
+            } else if (en.boundingClientRect.bottom < 40) {
+              en.target.classList.remove('is-in');
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px' });
+        document.querySelectorAll('section, .reveal').forEach(function (el) { io.observe(el); });
+      }
+
+      if (!reduce) {
+        var canvas = document.querySelector('.bg-particles');
+        if (canvas && canvas.getContext) {
+          var ctx = canvas.getContext('2d');
+          var motes = [];
+          var running = true;
+          function fit() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            var n = Math.max(28, Math.min(56, Math.round(canvas.width * canvas.height / 28000)));
+            motes = [];
+            for (var i = 0; i < n; i++) {
+              motes.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                s: Math.random() < 0.7 ? 2 : 3,
+                vx: (Math.random() - 0.5) * 0.22,
+                vy: (Math.random() - 0.5) * 0.18,
+                a: 0.08 + Math.random() * 0.18,
+                tw: Math.random() * Math.PI * 2,
+                ink: Math.random() < 0.18
+              });
+            }
+          }
+          function tick() {
+            if (!running) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            motes.forEach(function (p) {
+              p.x += p.vx; p.y += p.vy; p.tw += 0.008;
+              if (p.x < -4) p.x = canvas.width + 4;
+              if (p.x > canvas.width + 4) p.x = -4;
+              if (p.y < -4) p.y = canvas.height + 4;
+              if (p.y > canvas.height + 4) p.y = -4;
+              ctx.globalAlpha = p.a * (0.65 + 0.35 * Math.sin(p.tw));
+              ctx.fillStyle = p.ink ? '#111418' : '#0d6e63';
+              ctx.fillRect(Math.round(p.x), Math.round(p.y), p.s, p.s);
+            });
+            ctx.globalAlpha = 1;
+            requestAnimationFrame(tick);
+          }
+          fit();
+          window.addEventListener('resize', fit);
+          document.addEventListener('visibilitychange', function () {
+            running = document.visibilityState !== 'hidden';
+            if (running) requestAnimationFrame(tick);
+          });
+          requestAnimationFrame(tick);
+        }
+      }
+
+      var root = document.getElementById('cases');
+      if (root) {
+      var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+      var list = root.querySelector('.case-tabs');
+      var viewport = root.querySelector('.case-viewport');
+      var panels = Array.prototype.slice.call(root.querySelectorAll('[role="tabpanel"]'));
+      var prev = root.querySelector('.case-prev');
+      var next = root.querySelector('.case-next');
+      var i = 0;
+      var busy = false;
+      var token = 0;
+
+      function dirTo(n) {
+        if (i === panels.length - 1 && n === 0) return 1;
+        if (i === 0 && n === panels.length - 1) return -1;
+        return n > i ? 1 : -1;
+      }
+
+      function moveInk(n) {
+        var tab = tabs[n];
+        if (!tab || !list) return;
+        var r = tab.getBoundingClientRect();
+        var p = list.getBoundingClientRect();
+        list.style.setProperty('--tab-x', (r.left - p.left) + 'px');
+        list.style.setProperty('--tab-w', r.width + 'px');
+      }
+
+      function setTabs(n) {
+        tabs.forEach(function (tab, k) {
+          var on = k === n;
+          tab.setAttribute('aria-selected', on ? 'true' : 'false');
+          tab.tabIndex = on ? 0 : -1;
+        });
+        moveInk(n);
+      }
+
+      function flashFx() {
+        if (reduce || !viewport) return;
+        viewport.classList.remove('is-fx');
+        viewport.offsetWidth;
+        viewport.classList.add('is-fx');
+      }
+
+      function show(n, dir) {
+        n = (n + panels.length) % panels.length;
+        if (n === i || busy) return;
+        dir = dir || dirTo(n);
+        var from = panels[i];
+        var to = panels[n];
+        setTabs(n);
+        if (reduce) {
+          from.className = 'case is-hidden';
+          to.className = 'case';
+          i = n;
+          return;
+        }
+        busy = true;
+        var my = ++token;
+        var fromH = from.offsetHeight;
+        to.classList.remove('is-hidden');
+        to.classList.add('is-sliding', dir > 0 ? 'from-right' : 'from-left');
+        var toH = to.offsetHeight;
+        viewport.style.height = fromH + 'px';
+        from.classList.add('is-sliding');
+        viewport.offsetHeight;
+        viewport.style.transition = 'height .62s cubic-bezier(.16, 1, .3, 1)';
+        viewport.style.height = toH + 'px';
+        from.classList.add(dir > 0 ? 'is-out-left' : 'is-out-right');
+        to.classList.add('in-place');
+        to.classList.remove('from-right', 'from-left');
+        flashFx();
+
+        function done() {
+          if (my !== token) return;
+          from.className = 'case is-hidden';
+          to.className = 'case';
+          viewport.style.transition = '';
+          viewport.style.height = '';
+          viewport.classList.remove('is-fx');
+          i = n;
+          busy = false;
+        }
+        to.addEventListener('transitionend', function te(e) {
+          if (e.propertyName !== 'transform') return;
+          to.removeEventListener('transitionend', te);
+          done();
+        });
+        setTimeout(done, 720);
+      }
+
+      tabs.forEach(function (tab, k) {
+        tab.addEventListener('click', function () { show(k); });
+      });
+      if (prev) prev.addEventListener('click', function () { show(i - 1, -1); });
+      if (next) next.addEventListener('click', function () { show(i + 1, 1); });
+      root.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1, -1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); show(i + 1, 1); }
+      });
+
+      var startX = 0, startY = 0, tracking = false;
+      viewport.addEventListener('pointerdown', function (e) {
+        if (e.button) return;
+        tracking = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      });
+      window.addEventListener('pointerup', function (e) {
+        if (!tracking) return;
+        tracking = false;
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+        if (dx < 0) show(i + 1, 1);
+        else show(i - 1, -1);
+      });
+      window.addEventListener('resize', function () { moveInk(i); });
+      requestAnimationFrame(function () { moveInk(0); });
+      window.addEventListener('load', function () { moveInk(i); });
+      }
+
+      (function visitors() {
+        var mount = document.getElementById('vw-map');
+        if (!mount) return;
+        var VENDOR = 'vendor/';
+        var ABACUS = 'https://abacus.jasoncameron.dev';
+        var NS = 'lith-lixiaohui-cv';
+        var COUNTRIES = ['CN','TW','US','JP','KR','GB','DE','AU','CA','FR','IN','AE','NL','MY','TH','RU','VN','PH','HK','SG'];
+        var CITIES = [
+          { name: 'Shanghai', lat: 31.23, lon: 121.47 },
+          { name: 'Beijing', lat: 39.90, lon: 116.40 },
+          { name: 'Hangzhou', lat: 30.27, lon: 120.15 },
+          { name: 'Shenzhen', lat: 22.54, lon: 114.06 },
+          { name: 'Guangzhou', lat: 23.13, lon: 113.26 },
+          { name: 'Hong Kong', lat: 22.32, lon: 114.17 },
+          { name: 'Taipei', lat: 25.03, lon: 121.57 },
+          { name: 'Singapore', lat: 1.35, lon: 103.82 },
+          { name: 'Tokyo', lat: 35.68, lon: 139.69 },
+          { name: 'Seoul', lat: 37.57, lon: 126.98 },
+          { name: 'San Francisco', lat: 37.77, lon: -122.42 },
+          { name: 'New York', lat: 40.71, lon: -74.01 },
+          { name: 'London', lat: 51.51, lon: -0.13 },
+          { name: 'Berlin', lat: 52.52, lon: 13.40 }
+        ];
+        var COUNTRY_ZH = {
+          CN: '中国', HK: '香港', TW: '台湾', US: '美国', SG: '新加坡', JP: '日本',
+          KR: '韩国', GB: '英国', DE: '德国', AU: '澳大利亚', CA: '加拿大', FR: '法国',
+          IN: '印度', AE: '阿联酋', NL: '荷兰', MY: '马来西亚', TH: '泰国', RU: '俄罗斯',
+          VN: '越南', PH: '菲律宾'
+        };
+        var MAP_NAME = { HK: 'CN', MO: 'CN' };
+        var utc = new Date();
+        var day = utc.getUTCFullYear() + '-' + pad(utc.getUTCMonth() + 1) + '-' + pad(utc.getUTCDate());
+        var month = utc.getUTCFullYear() + '-' + pad(utc.getUTCMonth() + 1);
+        var params = new URLSearchParams(location.search);
+        var ownerIps = [];
+        try { ownerIps = JSON.parse(localStorage.getItem('lith-owner-ips') || '[]'); } catch (e) { ownerIps = []; }
+
+        function pad(n) { return n < 10 ? '0' + n : String(n); }
+        function set(id, v) { var el = document.getElementById(id); if (el) el.textContent = v; }
+        function fmt(n) {
+          n = Number(n || 0);
+          return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n);
+        }
+        function hashIP(ip) {
+          var s = 'lith-resume|' + ip, h = 2166136261;
+          for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+          return (h >>> 0).toString(16);
+        }
+        function gridKey(lat, lon) {
+          return 'g-' + Number(lat).toFixed(1) + '-' + Number(lon).toFixed(1);
+        }
+        function abacus(op, key) {
+          return fetch(ABACUS + '/' + op + '/' + NS + '/' + encodeURIComponent(key), { cache: 'no-store' })
+            .then(function (r) { return r.json().then(function (j) { return Number(j && j.value || 0); }).catch(function () { return 0; }); })
+            .catch(function () { return 0; });
+        }
+        function loadScript(src) {
+          return new Promise(function (res, rej) {
+            var s = document.createElement('script');
+            s.src = src; s.async = true; s.onload = res; s.onerror = rej;
+            document.head.appendChild(s);
+          });
+        }
+        function renderCounts(s) {
+          set('vw-total', fmt(s.total));
+          set('vw-unique', fmt(s.unique));
+          set('vw-month', fmt(s.month));
+          set('vw-today', fmt(s.today));
+        }
+        function initMap(stats) {
+          if (typeof echarts === 'undefined' || !window.__ECHARTS_WORLD__) return;
+          try { echarts.registerMap('world', window.__ECHARTS_WORLD__); } catch (e) {}
+          var chart = echarts.init(mount, null, { renderer: 'canvas' });
+          var maxC = Math.max.apply(null, (stats.countries || []).map(function (c) { return c.count; }).concat([1]));
+          var land = '#e6ebe6';
+          var border = '#d2d8d2';
+          var rampLo = '#e4f1ee';
+          var rampHi = '#8fbfb8';
+          var dot = '#0d6e63';
+          chart.setOption({
+            backgroundColor: 'transparent',
+            tooltip: {
+              trigger: 'item',
+              backgroundColor: '#1f2937',
+              borderColor: 'transparent',
+              textStyle: { color: '#fff', fontSize: 12 },
+              padding: [5, 9],
+              formatter: function (p) {
+                if (p.seriesType === 'effectScatter') return p.name + ' · ' + p.value[2];
+                var v = (p.value == null || isNaN(p.value)) ? 0 : p.value;
+                return (COUNTRY_ZH[p.name] || p.name) + ' · ' + v;
+              }
+            },
+            visualMap: {
+              type: 'continuous', min: 0, max: maxC, calculable: false, show: false,
+              inRange: { color: [rampLo, rampHi] }
+            },
+            geo: {
+              map: 'world', roam: false, silent: false,
+              aspectScale: 0.82, layoutCenter: ['50%', '44%'], layoutSize: '178%',
+              boundingCoords: [[-160, 74], [188, -42]],
+              itemStyle: { areaColor: land, borderColor: border, borderWidth: 0.5 },
+              emphasis: { itemStyle: { areaColor: '#d5e4e1' }, label: { show: false } }
+            },
+            series: [
+              {
+                type: 'map', map: 'world', geoIndex: 0,
+                data: (stats.countries || []).map(function (c) { return { name: c.code, value: c.count }; })
+              },
+              {
+                type: 'effectScatter', coordinateSystem: 'geo', zlevel: 2,
+                rippleEffect: { brushType: 'stroke', scale: reduce ? 1 : 5.6, period: 3 },
+                symbolSize: function (val) { return Math.max(12, 9 + Math.sqrt(val[2]) * 8); },
+                itemStyle: {
+                  color: dot,
+                  borderColor: '#fff',
+                  borderWidth: 1,
+                  shadowBlur: 12,
+                  shadowColor: 'rgba(13,110,99,.45)'
+                },
+                data: (stats.points || []).map(function (p) {
+                  return { name: p.name || 'Visitor', value: [p.lon, p.lat, p.c] };
+                })
+              }
+            ]
+          });
+          function resize() { try { chart.resize(); } catch (e) {} }
+          if ('ResizeObserver' in window) new ResizeObserver(resize).observe(mount);
+          window.addEventListener('resize', resize);
+        }
+        function loadMap(stats) {
+          loadScript(VENDOR + 'echarts-slim.js')
+            .then(function () { return loadScript(VENDOR + 'echarts-world.js'); })
+            .then(function () { initMap(stats); })
+            .catch(function () {});
+        }
+        function loadStats(here) {
+          return Promise.all([
+            abacus('get', 'total'),
+            abacus('get', 'unique'),
+            abacus('get', 'm-' + month),
+            abacus('get', 'd-' + day)
+          ].concat(COUNTRIES.map(function (cc) { return abacus('get', 'c-' + cc); }))).then(function (vals) {
+            var stats = {
+              total: vals[0], unique: vals[1], month: vals[2], today: vals[3],
+              countries: [], points: []
+            };
+            renderCounts(stats);
+            var tally = {};
+            COUNTRIES.forEach(function (cc, i) {
+              var n = vals[4 + i];
+              if (!(n > 0)) return;
+              var code = MAP_NAME[cc] || cc;
+              if (code === 'SG') return;
+              tally[code] = (tally[code] || 0) + n;
+            });
+            Object.keys(tally).forEach(function (code) {
+              stats.countries.push({ code: code, count: tally[code] });
+            });
+            return Promise.all(CITIES.map(function (c) { return abacus('get', gridKey(c.lat, c.lon)); })).then(function (cityVals) {
+              CITIES.forEach(function (c, i) {
+                if (cityVals[i] > 0) stats.points.push({ name: c.name, lat: c.lat, lon: c.lon, c: cityVals[i] });
+              });
+              if (here && here.lat != null && here.lon != null) {
+                var hit = stats.points.filter(function (p) {
+                  return Math.abs(p.lat - here.lat) < 0.45 && Math.abs(p.lon - here.lon) < 0.45;
+                })[0];
+                if (hit) {
+                  hit.c = Math.max(hit.c, 1);
+                  hit.name = here.name || hit.name;
+                } else {
+                  stats.points.push({
+                    name: here.name || 'You',
+                    lat: Number(here.lat),
+                    lon: Number(here.lon),
+                    c: 1
+                  });
+                }
+              }
+              loadMap(stats);
+            });
+          });
+        }
+
+        fetch('https://get.geojs.io/v1/ip/geo.json')
+          .then(function (r) { return r.json(); })
+          .then(function (geo) {
+            var ip = geo && geo.ip ? String(geo.ip) : '';
+            var city = (geo && (geo.city || geo.region)) || '';
+            var cc = ((geo && geo.country_code) || '').toUpperCase();
+            var country = COUNTRY_ZH[cc] || (geo && geo.country) || '';
+            var where = [city, country].filter(Boolean).join(', ') || '未知';
+            var lat = geo && geo.latitude != null ? Number(geo.latitude) : null;
+            var lon = geo && geo.longitude != null ? Number(geo.longitude) : null;
+            set('vw-from', where);
+            var here = (lat != null && lon != null && !isNaN(lat) && !isNaN(lon))
+              ? { lat: lat, lon: lon, name: where }
+              : null;
+
+            if (params.get('me') === '1' && ip) {
+              if (ownerIps.indexOf(ip) === -1) ownerIps.push(ip);
+              try { localStorage.setItem('lith-owner-ips', JSON.stringify(ownerIps)); } catch (e) {}
+            }
+            var owner = !!(ip && ownerIps.indexOf(ip) !== -1);
+            var mark = document.getElementById('vw-mark');
+            if (owner && mark) mark.hidden = false;
+            if (owner || sessionStorage.getItem('lith-hit') === '1') return loadStats(here);
+
+            sessionStorage.setItem('lith-hit', '1');
+            var jobs = [abacus('hit', 'total'), abacus('hit', 'm-' + month), abacus('hit', 'd-' + day)];
+            var marker = 'u-' + hashIP(ip || 'anon');
+            return abacus('get', marker).then(function (seen) {
+              if (!seen) {
+                jobs.push(abacus('hit', marker));
+                jobs.push(abacus('hit', 'unique'));
+                if (cc) jobs.push(abacus('hit', 'c-' + cc));
+                if (here) jobs.push(abacus('hit', gridKey(here.lat, here.lon)));
+              }
+              return Promise.all(jobs).then(function () { return loadStats(here); });
+            });
+          })
+          .catch(function () {
+            set('vw-from', '无法定位');
+            loadStats(null);
+          });
+      })();
+    })();
+  </script>
 </body>
 </html>
