@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>快速报价 · Lith</title>
+  <style>
+    :root {
+      --bg: #f3f4f2;
+      --panel: #fff;
+      --ink: #111418;
+      --muted: #5c6570;
+      --line: #e4e7ea;
+      --accent: #0d6e63;
+      --accent-2: #e8f4f2;
+      --warn: #8f3d24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", ui-sans-serif, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.55;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    header {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+      padding: 20px 28px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+    }
+    .kicker { font-size: 11px; letter-spacing: 0.16em; color: var(--accent); }
+    h1 { margin: 4px 0 0; font-size: 22px; letter-spacing: 0.04em; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; max-width: 48em; }
+    main { width: min(1080px, calc(100% - 40px)); margin: 16px auto 64px; }
+    .card { background: var(--panel); border: 1px solid var(--line); padding: 16px 18px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .btn, button.primary, button.ghost {
+      font: inherit; cursor: pointer;
+      border: 1px solid var(--ink); padding: 8px 14px; background: var(--ink); color: #fff;
+    }
+    button.ghost { background: transparent; color: var(--ink); }
+    label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+    input, select {
+      width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink);
+    }
+    input.num { width: 96px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .banner {
+      margin-bottom: 12px; padding: 10px 12px; background: var(--accent-2); color: var(--accent); font-size: 13px;
+    }
+    .banner.off { background: #f4e6df; color: var(--warn); }
+    .metrics { display: flex; gap: 32px; margin: 8px 0 14px; }
+    .metrics b { font-size: 26px; display: block; font-variant-numeric: tabular-nums; }
+    .metrics span { color: var(--muted); font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+    th { font-size: 11px; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+    .rm { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 4px; }
+    footer { padding: 24px 0; color: var(--muted); font-size: 12px; }
+    .grid2 { display: grid; grid-template-columns: 1.4fr .8fr; gap: 16px; }
+    @media (max-width: 800px) { .grid2, header { display: block; } main { width: calc(100% - 24px); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="kicker">报价</div>
+      <h1>快速报价</h1>
+      <p class="sub">读取拆解下发，或新建一份报价；按环节改人天和人天单价，再导出完整报价。单价为可改草稿，不是历史项目真实报价。</p>
+    </div>
+    <p class="muted" style="margin:0"><a href="../vp-agent/">← 拆解提效</a></p>
+  </header>
+  <main>
+    <div id="banner" class="banner off">还没有拆解下发。可先走拆解提效并确认下发，或在这里新建。</div>
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <label>报价名称</label>
+          <input id="title" value="虚拟制片报价草稿" />
+        </div>
+        <div>
+          <label>新建时用哪条产线</label>
+          <select id="pipeline"></select>
+        </div>
+      </div>
+      <div class="row">
+        <button class="primary" type="button" id="loadDispatch">读取下发</button>
+        <button class="ghost" type="button" id="newQuote">新建报价</button>
+        <button class="ghost" type="button" id="importCsv">导入表格</button>
+        <button class="ghost" type="button" id="exportCsv">导出完整报价</button>
+        <input id="file" type="file" accept=".csv,text/csv" hidden />
+      </div>
+      <p class="muted" id="source-line" style="margin-top:12px">尚未载入报价。</p>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="metrics">
+        <div><b id="m-days">—</b><span>人天</span></div>
+        <div><b id="m-sum">—</b><span>报价合计（元）</span></div>
+        <div><b id="m-rows">—</b><span>环节</span></div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>环节</th>
+            <th>负责</th>
+            <th>人天</th>
+            <th>人天单价</th>
+            <th>金额</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="body"></tbody>
+      </table>
+      <div class="row">
+        <button class="ghost" type="button" id="addRow">加一行</button>
+      </div>
+    </div>
+    <footer>Lith · 下发记录暂存在本机，稍后会改成表格文件互通。</footer>
+  </main>
+  <script src="../vp-agent/knowledge.js"></script>
+  <script>
+    const DISPATCH_KEY = "lith-vp-dispatch";
+    const DRAFT_RATES = {
+      pm: 1800, creative: 2000, art: 2200, paint: 2600, art2d: 2400,
+      cg3d: 2800, stage: 3200, capture: 3000, post: 2400, client: 2500,
+      hardware: 3000, qa: 1800, ta: 2800, release: 2000, design: 2200
+    };
+    const $ = (id) => document.getElementById(id);
+    let rows = [];
+    let source = "";
+
+    function rateFor(vendor) {
+      return DRAFT_RATES[vendor] || 2000;
+    }
+
+    function money(n) {
+      const x = Math.round(Number(n) || 0);
+      return x.toLocaleString("zh-CN");
+    }
+
+    function csvEscape(v) {
+      const s = String(v == null ? "" : v);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+
+    function parseCsv(text) {
+      const lines = text.replace(/^\ufeff/, "").split(/\r?\n/).filter((l) => l.trim());
+      if (!lines.length) return [];
+      const split = (line) => {
+        const out = []; let cur = ""; let q = false;
+        for (let i = 0; i < line.length; i++) {
+          const c = line[i];
+          if (q) {
+            if (c === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+            else if (c === '"') q = false;
+            else cur += c;
+          } else if (c === '"') q = true;
+          else if (c === ",") out.push(cur), cur = "";
+          else cur += c;
+        }
+        out.push(cur);
+        return out;
+      };
+      const head = split(lines[0]).map((h) => h.trim());
+      const idx = (name) => head.findIndex((h) => h === name);
+      const iName = idx("环节") >= 0 ? idx("环节") : 0;
+      const iVendor = idx("负责") >= 0 ? idx("负责") : 1;
+      const iDays = idx("人天") >= 0 ? idx("人天") : 2;
+      const iRate = idx("人天单价") >= 0 ? idx("人天单价") : (idx("单价") >= 0 ? idx("单价") : -1);
+      return lines.slice(1).map((line, n) => {
+        const c = split(line);
+        const vendorName = (c[iVendor] || "").trim();
+        const vendorId = Object.keys(LITH_KB.vendors).find((k) => LITH_KB.vendors[k].name === vendorName) || "";
+        return {
+          id: "row-" + n,
+          name: (c[iName] || "").trim() || "未命名环节",
+          vendor: vendorId,
+          vendorName: vendorName || "—",
+          days: Number(c[iDays]) || 0,
+          rate: iRate >= 0 ? Number(c[iRate]) || rateFor(vendorId) : rateFor(vendorId)
+        };
+      }).filter((r) => r.name);
+    }
+
+    function setBanner() {
+      let payload = null;
+      try { payload = JSON.parse(localStorage.getItem(DISPATCH_KEY) || "null"); } catch (e) {}
+      const el = $("banner");
+      if (payload && payload.stages && payload.stages.length) {
+        el.className = "banner";
+        el.textContent = "检测到拆解下发：" + (payload.pipelineName || "未命名") + " · " + payload.stages.length + " 个环节。点「读取下发」载入人天，再补各环节单价。";
+      } else {
+        el.className = "banner off";
+        el.textContent = "还没有拆解下发。可先走拆解提效并确认下发，或在这里新建。";
+      }
+    }
+
+    function totals() {
+      const days = rows.reduce((a, r) => a + (Number(r.days) || 0), 0);
+      const sum = rows.reduce((a, r) => a + (Number(r.days) || 0) * (Number(r.rate) || 0), 0);
+      $("m-days").textContent = Math.round(days * 10) / 10;
+      $("m-sum").textContent = money(sum);
+      $("m-rows").textContent = rows.length;
+      $("source-line").textContent = source || "尚未载入报价。";
+    }
+
+    function render() {
+      $("body").innerHTML = rows.map((r, i) => {
+        const amt = (Number(r.days) || 0) * (Number(r.rate) || 0);
+        return `<tr data-i="${i}">
+          <td><input value="${r.name.replace(/"/g, "&quot;")}" data-k="name"></td>
+          <td><input value="${(r.vendorName || "").replace(/"/g, "&quot;")}" data-k="vendorName"></td>
+          <td><input class="num" type="number" min="0" step="0.5" value="${r.days}" data-k="days"></td>
+          <td><input class="num" type="number" min="0" step="50" value="${r.rate}" data-k="rate"></td>
+          <td class="amt">${money(amt)}</td>
+          <td><button class="rm" type="button" data-rm="${i}">删除</button></td>
+        </tr>`;
+      }).join("");
+      totals();
+    }
+
+    function fromDispatch(payload) {
+      rows = (payload.stages || []).map((s) => ({
+        id: s.id,
+        name: s.name,
+        vendor: s.vendor,
+        vendorName: s.vendorName,
+        days: s.days,
+        rate: rateFor(s.vendor)
+      }));
+      $("title").value = (payload.pipelineName || "虚拟制片") + " · 报价草稿";
+      source = "来自拆解下发 · " + (payload.savedAt || "").replace("T", " ").slice(0, 16);
+    }
+
+    function fromPipeline(id) {
+      const pipe = LITH_KB.pipelines[id] || LITH_KB.pipelines.virtual_prod;
+      rows = pipe.stages.map((s) => {
+        const v = LITH_KB.vendors[s.vendor] || { name: s.vendor };
+        return {
+          id: s.id,
+          name: s.name,
+          vendor: s.vendor,
+          vendorName: v.name,
+          days: s.baseDays,
+          rate: rateFor(s.vendor)
+        };
+      });
+      $("title").value = pipe.name.replace("拆解提效", "报价草稿");
+      source = "新建 · " + pipe.name + " 默认环节（人天取基数，单价为草稿）";
+    }
+
+    $("pipeline").innerHTML = Object.values(LITH_KB.pipelines)
+      .map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
+
+    $("loadDispatch").onclick = () => {
+      let payload = null;
+      try { payload = JSON.parse(localStorage.getItem(DISPATCH_KEY) || "null"); } catch (e) {}
+      if (!payload || !payload.stages) {
+        $("banner").className = "banner off";
+        $("banner").textContent = "没有可读取的下发。请先在拆解提效里确认下发，或导入表格。";
+        return;
+      }
+      fromDispatch(payload);
+      render();
+    };
+
+    $("newQuote").onclick = () => {
+      fromPipeline($("pipeline").value);
+      render();
+    };
+
+    $("addRow").onclick = () => {
+      rows.push({ id: "row-" + Date.now(), name: "新环节", vendor: "pm", vendorName: "项目 / 制片", days: 1, rate: rateFor("pm") });
+      render();
+    };
+
+    $("body").addEventListener("input", (e) => {
+      const tr = e.target.closest("tr");
+      if (!tr) return;
+      const i = Number(tr.dataset.i);
+      const k = e.target.dataset.k;
+      if (!rows[i] || !k) return;
+      rows[i][k] = k === "days" || k === "rate" ? Number(e.target.value) : e.target.value;
+      const amt = (Number(rows[i].days) || 0) * (Number(rows[i].rate) || 0);
+      const cell = tr.querySelector(".amt");
+      if (cell) cell.textContent = money(amt);
+      totals();
+    });
+
+    $("body").addEventListener("click", (e) => {
+      if (e.target.dataset.rm == null) return;
+      rows.splice(Number(e.target.dataset.rm), 1);
+      render();
+    });
+
+    $("importCsv").onclick = () => $("file").click();
+    $("file").onchange = (e) => {
+      const file = e.target.files && e.target.files[0];
+      e.target.value = "";
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        rows = parseCsv(String(reader.result || ""));
+        $("title").value = file.name.replace(/\.csv$/i, "") || "导入报价";
+        source = "导入表格 · " + file.name;
+        render();
+      };
+      reader.readAsText(file, "utf-8");
+    };
+
+    $("exportCsv").onclick = () => {
+      if (!rows.length) return;
+      const title = $("title").value.trim() || "报价";
+      const days = rows.reduce((a, r) => a + (Number(r.days) || 0), 0);
+      const sum = rows.reduce((a, r) => a + (Number(r.days) || 0) * (Number(r.rate) || 0), 0);
+      const out = [["报价名称", "环节", "负责", "人天", "人天单价", "金额"]];
+      rows.forEach((r) => {
+        out.push([title, r.name, r.vendorName, r.days, r.rate, Math.round((Number(r.days) || 0) * (Number(r.rate) || 0))]);
+      });
+      out.push([]);
+      out.push(["合计", "", "", Math.round(days * 10) / 10, "", Math.round(sum)]);
+      const text = out.map((r) => r.map(csvEscape).join(",")).join("\n");
+      const blob = new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = title + ".csv";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    };
+
+    setBanner();
+    let payload = null;
+    try { payload = JSON.parse(localStorage.getItem(DISPATCH_KEY) || "null"); } catch (e) {}
+    if (payload && payload.stages && payload.stages.length) fromDispatch(payload);
+    else fromPipeline("virtual_prod");
+    render();
+  </script>
+</body>
+</html>

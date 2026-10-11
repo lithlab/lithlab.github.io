@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>虚拟制片拆解提效 · Lith</title>
+  <style>
+    :root {
+      --bg: #f3f4f2;
+      --panel: #fff;
+      --ink: #111418;
+      --muted: #5c6570;
+      --line: #e4e7ea;
+      --accent: #0d6e63;
+      --accent-2: #e8f4f2;
+      --warn: #8f3d24;
+      --ok: #0d6e63;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", ui-sans-serif, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.55;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    header {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+      padding: 20px 28px 12px; border-bottom: 1px solid var(--line); background: var(--panel);
+    }
+    .kicker { font-size: 11px; letter-spacing: 0.16em; color: var(--accent); }
+    h1 { margin: 4px 0 0; font-size: 22px; letter-spacing: 0.04em; }
+    .sub { color: var(--muted); font-size: 13px; margin-top: 4px; max-width: 42em; }
+    nav.tabs { display: flex; gap: 8px; padding: 12px 28px; }
+    nav.tabs button, .btn, button.primary, button.ghost {
+      font: inherit; cursor: pointer;
+    }
+    nav.tabs button {
+      border: 0; background: transparent; color: var(--muted); padding: 6px 4px;
+      border-bottom: 2px solid transparent;
+    }
+    nav.tabs button.on { color: var(--ink); border-bottom-color: var(--accent); }
+    main { width: min(1080px, calc(100% - 40px)); margin: 0 auto 64px; }
+    .steps { display: flex; gap: 8px; margin: 16px 0; font-size: 12px; color: var(--muted); }
+    .steps span { padding: 4px 8px; border: 1px solid var(--line); background: var(--panel); }
+    .steps span.on { border-color: var(--accent); color: var(--accent); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { background: var(--panel); border: 1px solid var(--line); padding: 16px 18px; }
+    label { display: block; font-size: 12px; color: var(--muted); margin: 10px 0 4px; }
+    input, select, textarea {
+      width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--line); background: #fff; color: var(--ink);
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chip {
+      border: 1px solid var(--line); background: #fff; padding: 6px 10px; font-size: 12.5px; cursor: pointer;
+    }
+    .chip:hover { border-color: var(--accent); }
+    .btn, button.primary, button.ghost {
+      border: 1px solid var(--ink); padding: 8px 14px; background: var(--ink); color: #fff;
+    }
+    button.ghost { background: transparent; color: var(--ink); }
+    .muted { color: var(--muted); font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 11px; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+    .tag { font-size: 11px; padding: 2px 6px; background: var(--accent-2); color: var(--accent); }
+    .tag.warn { background: #f4e6df; color: var(--warn); }
+    .risk { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+    .metrics { display: flex; gap: 24px; margin: 8px 0 14px; }
+    .metrics b { font-size: 26px; display: block; }
+    .metrics span { color: var(--muted); font-size: 12px; }
+    .pass { color: var(--ok); }
+    .fail { color: var(--warn); }
+    .trace { font-size: 12.5px; color: var(--muted); white-space: pre-wrap; background: var(--bg); padding: 12px; }
+    input.days { width: 72px; }
+    footer { padding: 24px 0; color: var(--muted); font-size: 12px; }
+    @media (max-width: 800px) { .grid2, header { display: block; } main { width: calc(100% - 24px); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="kicker">拆解提效</div>
+      <h1>虚拟制片拆解提效</h1>
+      <p class="sub">先拆步骤与人天，人确认后再下发。下发记录可给快速报价读取。</p>
+    </div>
+  </header>
+  <nav class="tabs">
+    <button class="on" data-tab="run">拆解</button>
+    <button data-tab="eval">校验</button>
+    <button data-tab="about">边界</button>
+  </nav>
+  <main>
+    <section id="tab-run">
+      <div class="steps">
+        <span class="on" data-step-label="1">1 锁范围</span>
+        <span data-step-label="2">2 拆人天</span>
+        <span data-step-label="3">3 确认</span>
+        <span data-step-label="4">4 下发</span>
+      </div>
+
+      <div id="step-1" class="grid2">
+        <div class="card">
+          <strong>需求</strong>
+          <label>产线</label>
+          <select id="pipeline"></select>
+          <label>简述</label>
+          <textarea id="brief" placeholder="时长、现场或成片、数字人、动捕"></textarea>
+          <div class="row" id="presets"></div>
+        </div>
+        <div class="card">
+          <strong>范围</strong>
+          <label>时长（秒）</label>
+          <input id="seconds" type="number" min="0" value="15" />
+          <label>品质</label>
+          <select id="quality">
+            <option value="draft">草案 / 内审</option>
+            <option value="mid" selected>中等可交付</option>
+            <option value="hero">Hero / 主视觉</option>
+          </select>
+          <label>引擎</label>
+          <select id="engine">
+            <option value="ue">UE / 实时</option>
+            <option value="cg">离线 CG</option>
+          </select>
+          <label>动捕 / 识别</label>
+          <select id="mocap">
+            <option value="none">无</option>
+            <option value="axis">AXIS / 自研识别</option>
+            <option value="camera">动作捕捉团队</option>
+            <option value="compare">需要方案对比</option>
+          </select>
+          <label>预算</label>
+          <select id="budget">
+            <option value="unknown">未定</option>
+            <option value="low">紧</option>
+            <option value="mid" selected>中</option>
+            <option value="high">松</option>
+          </select>
+          <label>截止日期</label>
+          <input id="deadline" placeholder="例如 21d" value="21d" />
+          <label>交片尺寸</label>
+          <select id="resolution">
+            <option value="1080" selected>1080p</option>
+            <option value="4k">4K</option>
+            <option value="led">LED / 现场大屏</option>
+          </select>
+          <label>帧率</label>
+          <select id="fps">
+            <option value="24">24</option>
+            <option value="25" selected>25</option>
+            <option value="30">30</option>
+            <option value="60">60</option>
+          </select>
+          <label>原料</label>
+          <select id="source">
+            <option value="ready" selected>已齐</option>
+            <option value="partial">部分缺失</option>
+            <option value="missing">未到</option>
+          </select>
+          <div class="grid2" style="gap:10px">
+            <div>
+              <label>修改次数上限</label>
+              <input id="revisions" type="number" min="0" value="2" />
+            </div>
+            <div>
+              <label>已发生修改</label>
+              <input id="revisionUsed" type="number" min="0" value="0" />
+            </div>
+          </div>
+          <label><input id="live" type="checkbox" /> 现场</label>
+          <label><input id="shoot" type="checkbox" /> 实拍</label>
+          <label><input id="sim" type="checkbox" /> 解算</label>
+          <label><input id="digitalHuman" type="checkbox" /> 数字人</label>
+          <label><input id="rollback" type="checkbox" /> 改回上一版</label>
+          <label><input id="strategic" type="checkbox" /> 重点项目</label>
+          <div class="row" style="margin-top:16px">
+            <button class="primary" id="goPlan" type="button">估算人天</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-2" hidden>
+        <div class="card">
+          <div class="metrics">
+            <div><b id="m-days">—</b><span>人天</span></div>
+            <div><b id="m-cal">—</b><span>并行工期</span></div>
+            <div><b id="m-risk">—</b><span>返工点</span></div>
+          </div>
+          <p class="muted" id="pipe-name"></p>
+          <p class="muted" id="rev-line"></p>
+          <p class="muted" id="boundary"></p>
+          <table>
+            <thead>
+              <tr>
+                <th>用</th><th>环节</th><th>人天</th><th>负责</th><th>提效</th><th>人过</th>
+              </tr>
+            </thead>
+            <tbody id="stage-body"></tbody>
+          </table>
+          <h3 style="margin:18px 0 8px;font-size:14px;">返工</h3>
+          <div id="risk-list"></div>
+          <div class="row" style="margin-top:16px">
+            <button class="ghost" type="button" id="back1">改范围</button>
+            <button class="primary" type="button" id="goConfirm">确认工序</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-3" hidden>
+        <div class="grid2">
+          <div class="card">
+            <strong>任务</strong>
+            <div id="task-list"></div>
+            <strong style="display:block;margin-top:16px">返工去向</strong>
+            <label><input type="radio" name="failWhy" value="pass" checked /> 通过</label>
+            <label><input type="radio" name="failWhy" value="prompt" /> 提示词不足，退回前期</label>
+            <label><input type="radio" name="failWhy" value="asset" /> 资产问题，退回原画 / 模型</label>
+            <div class="row" style="margin-top:16px">
+              <button class="ghost" type="button" id="back2">返回改人天</button>
+              <button class="primary" type="button" id="dispatch">确认下发</button>
+            </div>
+          </div>
+          <div class="card">
+            <strong>记录</strong>
+            <pre class="trace" id="trace"></pre>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-4" hidden>
+        <div class="card">
+          <strong>已下发</strong>
+          <pre class="trace" id="final-trace"></pre>
+          <p class="muted" id="dispatch-hint"></p>
+          <div class="row">
+            <button class="primary" type="button" id="openQuote">去快速报价</button>
+            <button class="ghost" type="button" id="exportDispatch">导出下发表格</button>
+            <button class="ghost" type="button" id="reset">再走一遍</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-eval" hidden>
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center">
+          <strong>提效校验</strong>
+          <button class="primary" type="button" id="runEval">运行全部</button>
+        </div>
+        <p class="muted" id="eval-sum"></p>
+        <table>
+          <thead><tr><th>ID</th><th>用例</th><th>结果</th><th>人天</th><th>差异</th></tr></thead>
+          <tbody id="eval-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-about" hidden>
+      <div class="card">
+        <h2 style="font-size:16px;margin-top:0">提效边界</h2>
+        <ul>
+          <li>AI 提效：剧本、分镜氛围、三视图</li>
+          <li>不提效：原画、模型、成片</li>
+          <li>少返工：A Copy 后 B Copy，再交客户</li>
+          <li>少加轮：修改到顶，由客户取舍</li>
+        </ul>
+      </div>
+    </section>
+    <footer>Lith</footer>
+  </main>
+
+  <script src="knowledge.js"></script>
+  <script src="engine.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let current = null;
+    let dispatched = false;
+
+    function fieldsFromForm() {
+      return {
+        seconds: Number($("seconds").value) || 0,
+        quality: $("quality").value,
+        engine: $("engine").value,
+        mocap: $("mocap").value,
+        budget: $("budget").value,
+        deadline: $("deadline").value.trim(),
+        live: $("live").checked,
+        shoot: $("shoot").checked,
+        sim: $("sim").checked,
+        digitalHuman: $("digitalHuman").checked,
+        rollback: $("rollback").checked,
+        strategic: $("strategic").checked,
+        resolution: $("resolution").value,
+        fps: $("fps").value,
+        source: $("source").value,
+        revisions: Number($("revisions").value),
+        revisionUsed: Number($("revisionUsed").value),
+        brief: $("brief").value.trim()
+      };
+    }
+
+    function applyFields(f) {
+      $("seconds").value = f.seconds;
+      $("quality").value = f.quality;
+      $("engine").value = f.engine;
+      $("mocap").value = f.mocap;
+      $("budget").value = f.budget;
+      $("deadline").value = f.deadline;
+      $("live").checked = !!f.live;
+      $("shoot").checked = !!f.shoot;
+      $("sim").checked = !!f.sim;
+      $("digitalHuman").checked = !!f.digitalHuman;
+      $("rollback").checked = !!f.rollback;
+      $("strategic").checked = !!f.strategic;
+      $("resolution").value = f.resolution || "1080";
+      $("fps").value = f.fps || "25";
+      $("source").value = f.source || "ready";
+      $("revisions").value = f.revisions ?? 2;
+      $("revisionUsed").value = f.revisionUsed ?? 0;
+    }
+
+    function showStep(n) {
+      [1, 2, 3, 4].forEach((i) => {
+        $("step-" + i).hidden = i !== n;
+      });
+      document.querySelectorAll("[data-step-label]").forEach((el) => {
+        el.classList.toggle("on", Number(el.dataset.stepLabel) <= n);
+      });
+    }
+
+    function editsFromTable() {
+      const edits = {};
+      document.querySelectorAll("#stage-body tr").forEach((tr) => {
+        const id = tr.dataset.id;
+        edits[id] = {
+          on: tr.querySelector(".on").checked,
+          days: tr.querySelector(".days").value,
+          mustHuman: tr.querySelector(".human").checked
+        };
+      });
+      return edits;
+    }
+
+    function renderPlan(result) {
+      current = result;
+      $("m-days").textContent = result.totalDays;
+      $("m-cal").textContent = result.calendarHint;
+      $("m-risk").textContent = result.risks.length;
+      $("pipe-name").textContent = result.pipelineName;
+      const f0 = fieldsFromForm();
+      const cap = Number.isFinite(f0.revisions) ? f0.revisions : 0;
+      const used = Number.isFinite(f0.revisionUsed) ? f0.revisionUsed : 0;
+      const revBits = ["修改 " + used + " / " + cap];
+      if (f0.rollback) revBits.push("改回上一版");
+      if (f0.strategic) revBits.push("重点项目");
+      $("rev-line").textContent = result.pipelineId === "virtual_prod" ? revBits.join(" · ") : "";
+      const aiOn = result.stages.filter((s) => s.ai === "assist").map((s) => s.name);
+      $("boundary").textContent = result.pipelineId === "virtual_prod"
+        ? "提效：" + (aiOn.join("、") || "无") + "　不提效：原画、模型、成片"
+        : (aiOn.length ? "提效：" + aiOn.join("、") : "");
+      $("stage-body").innerHTML = result.stages.map((s) => {
+        const v = LITH_KB.vendors[s.vendor];
+        const ai = s.ai === "assist" ? "AI" : "—";
+        return `<tr data-id="${s.id}">
+          <td><input class="on" type="checkbox" ${s.on ? "checked" : ""}></td>
+          <td>${s.name}</td>
+          <td><input class="days" type="number" min="0" step="0.5" value="${s.days}"></td>
+          <td>${v.name}</td>
+          <td><span class="tag">${ai}</span></td>
+          <td><input class="human" type="checkbox" ${s.mustHuman ? "checked" : ""}></td>
+        </tr>`;
+      }).join("");
+      $("risk-list").innerHTML = result.risks.map((r) =>
+        `<div class="risk"><span class="tag ${r.level === "high" ? "warn" : ""}">${r.level}</span> ${r.text}</div>`
+      ).join("");
+    }
+
+    function renderTasks(result) {
+      const tasks = LITH_ENGINE.vendorTasks(result);
+      $("task-list").innerHTML = tasks.map((t) =>
+        `<div class="risk"><strong>${t.vendor}</strong> · ${t.stage} · ${t.days} 人天
+         ${t.mustHuman ? '<span class="tag warn">人过</span>' : ""}
+         ${t.ai === "assist" ? '<span class="tag">提效</span>' : ""}
+         </div>`
+      ).join("");
+      const f = fieldsFromForm();
+      const why = document.querySelector("input[name=failWhy]:checked");
+      const whyText = why && why.value === "prompt"
+        ? "退回前期"
+        : why && why.value === "asset"
+          ? "退回原画 / 模型"
+          : "通过";
+      $("trace").textContent = [
+        result.pipelineName,
+        f.brief || "—",
+        [f.quality, f.engine, f.mocap, f.resolution, f.fps + "fps"].join(" · "),
+        "修改 " + f.revisionUsed + " / " + f.revisions + (f.rollback ? " · 改回上一版" : ""),
+        "人天 " + result.totalDays + " · 并行 " + result.calendarHint,
+        "返工 " + whyText,
+        "状态：未下发"
+      ].join("\n");
+    }
+
+    $("pipeline").innerHTML = Object.values(LITH_KB.pipelines)
+      .map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
+
+    $("presets").innerHTML = Object.entries(LITH_KB.presets).map(([k, p]) =>
+      `<button class="chip" type="button" data-preset="${k}">${p.label}</button>`
+    ).join("");
+
+    $("presets").addEventListener("click", (e) => {
+      const id = e.target.dataset.preset;
+      if (!id) return;
+      const p = LITH_KB.presets[id];
+      $("pipeline").value = p.pipeline;
+      $("brief").value = p.brief;
+      applyFields(p.fields);
+    });
+
+    $("goPlan").onclick = () => {
+      dispatched = false;
+      const result = LITH_ENGINE.plan($("pipeline").value, fieldsFromForm());
+      renderPlan(result);
+      showStep(2);
+    };
+
+    $("back1").onclick = () => showStep(1);
+    $("back2").onclick = () => showStep(2);
+
+    $("goConfirm").onclick = () => {
+      current = LITH_ENGINE.applyEdits(current, editsFromTable());
+      renderPlan(current);
+      renderTasks(current);
+      showStep(3);
+    };
+
+    document.querySelectorAll("input[name=failWhy]").forEach((el) => {
+      el.addEventListener("change", () => { if (current) renderTasks(current); });
+    });
+
+    const DISPATCH_KEY = "lith-vp-dispatch";
+
+    function dispatchPayload() {
+      const f = fieldsFromForm();
+      const tasks = current ? LITH_ENGINE.vendorTasks(current) : [];
+      return {
+        version: 1,
+        source: "vp-agent",
+        savedAt: new Date().toISOString(),
+        pipelineId: current.pipelineId,
+        pipelineName: current.pipelineName,
+        brief: f.brief,
+        fields: f,
+        totalDays: current.totalDays,
+        calendarHint: current.calendarHint,
+        stages: current.stages.map((s, i) => {
+          const v = LITH_KB.vendors[s.vendor] || { name: s.vendor };
+          const t = tasks[i] || {};
+          return {
+            id: s.id,
+            name: s.name,
+            vendor: s.vendor,
+            vendorName: v.name,
+            days: s.days,
+            ai: s.ai,
+            mustHuman: s.mustHuman,
+            note: t.body || ""
+          };
+        })
+      };
+    }
+
+    function csvEscape(v) {
+      const s = String(v == null ? "" : v);
+      return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+
+    function downloadCsv(name, rows) {
+      const text = rows.map((r) => r.map(csvEscape).join(",")).join("\n");
+      const blob = new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    $("dispatch").onclick = () => {
+      dispatched = true;
+      const payload = dispatchPayload();
+      try { localStorage.setItem(DISPATCH_KEY, JSON.stringify(payload)); } catch (e) {}
+      $("final-trace").textContent = $("trace").textContent.replace("状态：未下发", "状态：已下发");
+      $("dispatch-hint").textContent = "已写入本机下发记录，快速报价可直接读取。表格导出稍后也会接到同一份结构。";
+      showStep(4);
+    };
+
+    $("exportDispatch").onclick = () => {
+      if (!current) return;
+      const payload = dispatchPayload();
+      const rows = [["环节", "负责", "人天", "人过", "提效", "说明"]];
+      payload.stages.forEach((s) => {
+        rows.push([s.name, s.vendorName, s.days, s.mustHuman ? "是" : "", s.ai === "assist" ? "AI" : "", s.note]);
+      });
+      downloadCsv("拆解下发-" + (payload.pipelineName || "quote") + ".csv", rows);
+    };
+
+    $("openQuote").onclick = () => { location.href = "../vp-quote/"; };
+
+    $("reset").onclick = () => showStep(1);
+
+    document.querySelectorAll("nav.tabs button").forEach((btn) => {
+      btn.onclick = () => {
+        document.querySelectorAll("nav.tabs button").forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        ["run", "eval", "about"].forEach((t) => {
+          $("tab-" + t).hidden = btn.dataset.tab !== t;
+        });
+      };
+    });
+
+    $("runEval").onclick = () => {
+      const rows = LITH_ENGINE.runAllEvals();
+      const pass = rows.filter((r) => r.pass).length;
+      $("eval-sum").textContent = pass + " / " + rows.length + " 通过";
+      $("eval-body").innerHTML = rows.map((r) =>
+        `<tr>
+          <td>${r.id}</td>
+          <td>${r.title}</td>
+          <td class="${r.pass ? "pass" : "fail"}">${r.pass ? "通过" : "失败"}</td>
+          <td>${r.totalDays}</td>
+          <td class="muted">${r.fail.join("；")}</td>
+        </tr>`
+      ).join("");
+    };
+  </script>
+</body>
+</html>
