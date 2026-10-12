@@ -57,16 +57,16 @@
     }
     a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    a[href^="http"]:not(.vibe-proj) {
+    a[href^="http"]:not(.vibe-proj):not(.print-btn) {
       color: var(--link);
       position: relative;
       padding-right: 0.62em;
     }
-    a[href^="http"]:not(.vibe-proj):hover {
+    a[href^="http"]:not(.vibe-proj):not(.print-btn):hover {
       color: var(--link-hover);
       text-decoration: underline;
     }
-    a[href^="http"]:not(.vibe-proj)::after {
+    a[href^="http"]:not(.vibe-proj):not(.print-btn)::after {
       content: "";
       position: absolute;
       top: 0.04em;
@@ -80,7 +80,7 @@
     }
     mark { background: var(--hl); color: inherit; padding: 0 .15em; font-weight: 600; }
     .page-wrap {
-      width: min(1140px, calc(100% - 32px)); margin: 24px auto 32px;
+      width: min(1140px, calc(100% - 32px)); margin: 24px auto 16px;
       position: relative; z-index: 1;
     }
     .shell {
@@ -172,14 +172,26 @@
     .side-nav a.is-current::before {
       width: 3px; height: 11px;
     }
-    aside .print-btn {
-      margin-top: 12px; width: 100%;
-      border: 1px solid var(--accent); background: transparent;
-      color: var(--accent); padding: 8px; font: inherit; font-size: 12px;
-      letter-spacing: 0.1em; cursor: pointer;
-      transition: background .35s var(--ease-expo), color .35s var(--ease-expo), letter-spacing .35s var(--ease-expo);
+    .export-block { margin-top: 14px; }
+    .export-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--line);
     }
-    aside .print-btn:hover { background: var(--accent); color: var(--panel); letter-spacing: .16em; }
+    aside .print-btn {
+      display: block; width: 100%; box-sizing: border-box; text-align: center;
+      border: 0; background: transparent;
+      color: var(--muted); padding: 7px 2px; font: inherit; font-size: 11px;
+      letter-spacing: 0.06em; cursor: pointer; text-decoration: none; white-space: nowrap;
+      transition: color .25s var(--ease-expo), background .25s var(--ease-expo);
+    }
+    aside .print-btn + .print-btn { border-left: 1px solid var(--line); }
+    aside .print-btn:hover {
+      color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent);
+      text-decoration: none;
+    }
+    .export-note {
+      margin: 6px 0 0; font-size: 10px; line-height: 1.4; color: var(--muted);
+    }
     .tl-rail {
       position: absolute; left: calc(100% + 18px); top: 0; height: 0;
       width: 56px; pointer-events: none;
@@ -374,31 +386,39 @@
     .case.is-out-right { transform: translateX(100%); }
     .case.in-place { transform: translateX(0); }
     .label { font-size: 11px; letter-spacing: 0.12em; color: var(--accent); margin: 12px 0 4px; font-weight: 600; }
-    .linkbar { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-    .linkbar a {
+    .link-groups { display: grid; gap: 10px; margin-top: 10px; }
+    .link-group {
+      display: grid; grid-template-columns: 6.2em 1fr; gap: 6px 14px; align-items: start;
       --chip: #0d6e63; --chip-bg: #e8f4f1;
+    }
+    .link-group.is-hw { --chip: #1a6b8a; --chip-bg: #e7f3f6; }
+    .link-group.is-vc { --chip: #4e6f8f; --chip-bg: #eef2f6; }
+    .link-cat {
+      margin: 0; padding-top: 8px; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; color: var(--muted); line-height: 1.35;
+    }
+    .linkbar { display: flex; flex-wrap: wrap; gap: 8px; }
+    .link-group .linkbar a, .linkbar .chip {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 12px; font-weight: 600; letter-spacing: 0.03em;
-      color: var(--chip); background: var(--chip-bg);
+      color: var(--chip); background: var(--chip-bg); padding-right: 11px;
       border: 0; padding: 7px 11px 7px 9px;
       clip-path: polygon(5px 0, calc(100% - 5px) 0, 100% 5px, 100% calc(100% - 5px), calc(100% - 5px) 100%, 5px 100%, 0 calc(100% - 5px), 0 5px);
       box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--chip) 32%, transparent);
       transition: color .25s var(--ease-expo), background .25s var(--ease-expo), transform .3s var(--ease-expo);
     }
-    .linkbar a:nth-child(4n+2) { --chip: #1a6b8a; --chip-bg: #e7f3f6; }
-    .linkbar a:nth-child(4n+3) { --chip: #4e6f8f; --chip-bg: #eef2f6; }
-    .linkbar a:nth-child(4n+4) { --chip: #3d6b5c; --chip-bg: #eef5f1; }
-    .linkbar a::before {
+    .linkbar a::before, .linkbar .chip::before {
       content: ""; width: 6px; height: 6px; flex-shrink: 0;
       background: currentColor;
       box-shadow: 2px 2px 0 color-mix(in srgb, currentColor 28%, #fff);
       image-rendering: pixelated;
     }
-    .linkbar a::after { display: none; }
-    .linkbar a:hover {
+    .link-group .linkbar a::after { display: none; }
+    .link-group .linkbar a:hover {
       color: #fff; background: var(--chip); text-decoration: none;
       transform: translate(-1px, -1px);
     }
+    .linkbar .chip { cursor: default; }
     .m .reveal {
       opacity: 0; transform: translateY(14px);
       transition: opacity .9s var(--ease-expo), transform .9s var(--ease-expo);
@@ -442,7 +462,7 @@
     }
     .bottom-mods {
       width: min(1140px, calc(100% - 32px));
-      margin: 4px auto 56px;
+      margin: 2px auto 56px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
       align-items: stretch; position: relative; z-index: 1;
     }
@@ -457,8 +477,24 @@
       font-weight: 600; font-size: 12px; margin-bottom: 8px;
     }
     .vw-dot {
+      position: relative; display: inline-block; flex-shrink: 0;
       width: 6px; height: 6px; border-radius: 50%; background: #22c55e;
       box-shadow: 0 0 0 2px rgba(34,197,94,.18);
+      animation: vw-breathe 2.8s ease-in-out infinite;
+    }
+    .vw-dot::after {
+      content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: #22c55e; pointer-events: none;
+      animation: vw-halo 2.8s ease-out infinite;
+    }
+    .note-widget .vw-dot, .note-widget .vw-dot::after { animation-delay: 1.1s; }
+    @keyframes vw-breathe {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .55; transform: scale(.88); }
+    }
+    @keyframes vw-halo {
+      0% { transform: scale(1); opacity: .42; }
+      70%, 100% { transform: scale(2.8); opacity: 0; }
     }
     .vw-mark {
       margin-left: auto; font-size: 10px; color: var(--accent); letter-spacing: .06em;
@@ -486,7 +522,7 @@
     .vibe-list { display: flex; flex-direction: column; gap: 10px; flex: 1; }
     .vibe-proj {
       --chip: #0d6e63; --chip-bg: #e8f4f1;
-      display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+      display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
       position: relative;
       border: 0; background: var(--chip-bg);
       padding: 14px 12px;
@@ -500,13 +536,6 @@
       background: color-mix(in srgb, var(--chip) 12%, #fff);
       text-decoration: none; transform: translate(-1px, -1px);
       box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--chip) 55%, transparent);
-    }
-    .vibe-idx {
-      display: grid; place-items: center;
-      min-width: 28px; height: 28px; padding: 0 6px;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.04em; color: #fff;
-      background: var(--chip);
-      clip-path: polygon(4px 0, calc(100% - 4px) 0, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 0 calc(100% - 4px), 0 4px);
     }
     .vibe-copy { min-width: 0; }
     .vibe-proj-name {
@@ -538,6 +567,8 @@
       main { padding: 22px 18px 32px; }
       .lang-switch { top: 22px; right: 18px; }
       .job-head, .case-top, .edu-entry { flex-direction: column; gap: 2px; }
+      .link-group { grid-template-columns: 1fr; gap: 4px; }
+      .link-cat { padding-top: 0; }
       .case-stage { grid-template-columns: 28px 1fr 28px; gap: 6px; }
       .case-arrow { width: 28px; height: 28px; }
       .case-tabs button { padding: 8px 10px 10px; font-size: 12.5px; }
@@ -553,7 +584,7 @@
       .grain, .scroll-progress, .tab-ink, .px-ghost, .bg-particles, .bottom-mods, .visitor-widget, .tl-rail { display: none; }
       .m .shell, .m .reveal, .m .kicker, .portrait { opacity: 1; transform: none; animation: none; }
       .m section > h2::after { transform: scaleX(1); }
-      aside .print-btn, .lang-switch, .side-nav, .case-tabs, .case-arrow { display: none; }
+      .export-block, .lang-switch, .side-nav, .case-tabs, .case-arrow { display: none; }
       .case-stage { display: block; }
       .case-viewport { overflow: visible; height: auto !important; }
       .case.is-hidden, .case.is-sliding { display: block; position: static; transform: none; }
@@ -566,11 +597,12 @@
       mark { background: #eee; }
       a { color: inherit; text-decoration: none; }
       a[href^="http"]::after { display: none; }
-      .linkbar a {
+      .linkbar a, .linkbar .chip {
         clip-path: none; color: #111; background: #eee; box-shadow: none;
         padding: 3px 8px; font-weight: 600;
       }
-      .linkbar a::before { display: none; }
+      .linkbar a::before, .linkbar .chip::before { display: none; }
+      .link-group { grid-template-columns: 5.4em 1fr; }
       .lede, .edu-major, .job p, .case p, .job ul, .case ul, time, .skill-block p, footer { color: #444; }
       .org { color: #111; }
       .job > p.duty { background: #eee; border-left-color: #111; color: #111; }
@@ -580,8 +612,8 @@
     @media (prefers-reduced-motion: reduce) {
       .grain, .scroll-progress, .bg-particles { display: none; }
       .m .shell, .m .kicker, .m .reveal, .case.is-sliding, .tab-ink, .portrait,
-      .side-nav a, .side-nav a::before, aside .print-btn, .lang-switch button, .linkbar a, .case-tabs button,
-      .m section > h2::after, .m .tl-board {
+      .side-nav a, .side-nav a::before, aside .print-btn, .lang-switch button, .linkbar a, .linkbar .chip, .case-tabs button,
+      .m section > h2::after, .m .tl-board, .vw-dot, .vw-dot::after {
         animation: none; transition: none; transform: none; opacity: 1;
       }
       .m section > h2::after { transform: scaleX(1); }
@@ -613,7 +645,13 @@
           <a href="#cases" data-i18n="nav.cases">主要项目案例</a>
           <a href="#skills" data-i18n="nav.skills">个人技能</a>
         </div>
-        <button type="button" class="print-btn" onclick="window.print()" data-i18n="print">打印 / 存 PDF</button>
+        <div class="export-block">
+          <div class="export-row">
+            <a class="print-btn" href="assets/resume-aipm.pdf" download="李筱慧_简历_AIPM.pdf" data-i18n="export.dl">下载 PDF</a>
+            <button type="button" class="print-btn" onclick="window.print()" data-i18n="export.print">打印网页</button>
+          </div>
+          <p class="export-note" data-i18n="export.note">PDF 投递版 · 打印为本页排版</p>
+        </div>
       </div>
     </aside>
     <main>
@@ -644,11 +682,11 @@
         <h2 data-i18n="exp.h2">工作经历</h2>
         <div class="job reveal" id="job-hero" data-start="2024.5" data-end="2026.5" data-tl="hero">
           <div class="job-head"><div class="org-block"><img class="org-logo is-stack" src="assets/logos/hero.png?v=2" alt=""><div><h3 class="org" data-i18n="job.hero.org">英雄电竞 HeroEsports（胤风子内容矩阵 / 战略研发事业部）</h3><div class="role" data-i18n="job.hero.title">资深产品经理</div></div></div><time>2024.5 – 2026.5</time></div>
-          <p class="duty" data-i18n="job.hero.duty">资深 VR 产品经理、游戏项目管理、飞书项目高级管理员、workflow 0-1 搭建、软硬件开发管理、虚拟制片/虚拟IP（AI 工作流）</p>
+          <p class="duty" data-i18n="job.hero.duty">VR游戏产品全流程，飞书项目workflow 0-1搭建，软硬件开发，虚拟制片（AI工作流）</p>
           <ul>
-            <li data-i18n-html="job.hero.li1"><strong>Workflow 搭建：</strong>前期搭建 ONES，后续搬迁更新至飞书项目。0-1 搭建游戏需求开发、美术资源 2D / 3D、项目工时管理、缺陷修复的完整 workflow。</li>
+            <li data-i18n-html="job.hero.li1"><strong>Workflow 搭建：</strong>前期搭建 ONES，后续搬迁更新至飞书项目。0-1 搭建游戏需求开发、美术资源 2/3D、项目工时管理、缺陷修复，完整 workflow。</li>
             <li data-i18n-html="job.hero.li2">主笔四级结构（<mark>版本规划 → 业务线 → 需求 → 任务</mark>）并推动落地，覆盖约 <mark>30 人</mark>研发组、每周约 10-15 条需求流转与 20 条缺陷、多家供应商。根据部门实际使用情况更新及维护流程，进行全部门使用培训，固定效率复盘，完成整体工作流提效。（案例获得飞书项目社区高级管理员认证）</li>
-            <li data-i18n-html="job.hero.li3"><strong>VR 游戏产品：</strong>管理上海部门本地<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">《VTKD》</a>软硬件开发。合作新加坡团队联合运营游戏商业化；从新加坡开发侧接手后，在上海独立拉起需求，一年迭代约 <mark>6 个可玩版本</mark>，新增 <mark>10 个游戏角色、3 个落地场景</mark>。管理《VTKD2》（未上线）内部项目研发及其他开发需求、版本需求、版本更新、会议管理、供应商合作。</li>
+            <li data-i18n-html="job.hero.li3"><strong>VR 游戏产品：</strong>管理上海部门本地<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">《VTKD》</a>软硬件开发。合作新加坡团队联合运营游戏商业化；从新加坡开发侧接手后，在上海独立拉起需求，一年迭代约 <mark>6 个可玩版本</mark>，新增 <mark>10 游戏角色、3 落地场景</mark>。管理《VTKD2》（未上线）内部项目研发及其他开发需求、版本需求、版本更新、会议管理、供应商合作。</li>
             <li data-i18n="job.hero.li4">项目完成巴黎奥运会电竞周展示、新加坡乌节路快闪活动。</li>
             <li data-i18n-html="job.hero.li5"><strong>自研硬件开发管理：</strong><a href="https://refract.gg/" target="_blank" rel="noopener">AXIS</a> 自研惯性动捕硬件，对比测试惯性动捕、摄像头动捕、光学动捕棚三条路线后确定技术路径。</li>
             <li data-i18n-html="job.hero.li6"><strong>虚拟制片 &amp; 产线管理：</strong>内容矩阵技术研发部 PM 负责人，标准化报价流程与项目信息表，加入并规范 AI 在创意前期的可用边界与终稿审核红线。兼顾双部门支援技术中台的约半年，经手实际入账约 <mark>120 万元</mark>（3-4 个项目），优化平均利润率 <mark>45%-50%</mark>，制作提效 <mark>30%+</mark>，人天成本下降 <mark>20%+</mark>。</li>
@@ -656,29 +694,28 @@
         </div>
         <div class="job reveal" id="job-deemos" data-start="2023.7" data-end="2024.1" data-tl="deemos">
           <div class="job-head"><div class="org-block"><img class="org-logo is-wide" src="assets/logos/dgene.png?v=2" alt=""><div><h3 class="org" data-i18n="job.deemos.org">叠境数字（上海）科技有限公司</h3><div class="role" data-i18n="job.deemos.title">项目经理</div></div></div><time>2023.7 – 2024.1</time></div>
-          <p class="duty" data-i18n="job.deemos.duty">AIGC 平台（B 端成片），算法项目管理，RAG 知识库问答</p>
+          <p class="duty" data-i18n="job.deemos.duty">AIGC 平台（B 端成片），算法项目迭代，RAG 知识库问答</p>
           <ul>
-            <li data-i18n-html="job.deemos.li1"><strong>项目管理体系建设：</strong>对接 VP，作为部门项目管理负责人，梳理搭建数字人业务线项目管理体系；负责项目周会内容梳理及阶段成果 review，组织内外部关键节点评审；独立完成项目方案规划、成本评估、项目执行（采购、质量审核、风险管理、干系人沟通）、项目收尾全流程搭建，创建项目资料库。</li>
+            <li data-i18n-html="job.deemos.li1"><strong>项目管理体系建设：</strong>对接 VP，作为部门项目管理负责人，梳理搭建数字人业务线项目管理体系；负责项目周会内容梳理及阶段成果 review，组织内外部关键节点评审；独立完成完整项目方案规划、成本评估、项目执行（采购、质量审核、风险管理、干系人沟通）、项目收尾全流程搭建，创建项目资料库。</li>
             <li data-i18n-html="job.deemos.li2"><strong>AIGC 平台开发与管理：</strong>PC 端 H5 内容生成平台，负责整个产品模块的需求与排期、用户客制化需求收集、用户反馈数据分析、竞品动态跟踪；负责内部开发优先级排期、功能测试情况及管理后台账号使用数据。</li>
-            <li data-i18n-html="job.deemos.li3"><strong>算法项目：</strong>【叠境 × SMG 第一财经 3D 数字主播伊可】口型算法迭代。通过历史项目经验建议团队增强口型数据采集与更新验收标准，生成更准确的虚拟人算法口型（landmark → 3D 人脸关键点），组织算法专家 QC 保障迭代效果，在 V3-V4 版本中，虚拟人口型准确度大幅提升。</li>
-            <li data-i18n-html="job.deemos.li4">【企业内部 RAG 知识库问答】向量检索 + 大模型作答的制度问答产品，负责切片口径、答与不答的边界、评测集与更新回归机制。</li>
+            <li data-i18n-html="job.deemos.li3"><strong>算法项目：</strong>【叠境 × SMG 第一财经 3D 数字主播伊可】口型算法迭代。通过历史项目经验建议团队增强口型数据采集与更新验收标准，生成更准确的虚拟人算法口型（landmark → 3D 人脸关键点），组织算法专家 QC 保障迭代效果，在 V3-V4 版本中，虚拟人口型准确度大幅提升。【企业内部 RAG 知识库问答】向量检索 + 大模型作答的制度问答产品，负责切片口径、答与不答的边界、评测集与更新回归机制。</li>
           </ul>
         </div>
         <div class="job reveal" id="job-mofa" data-start="2022.3" data-end="2023.3" data-tl="mofa">
           <div class="job-head"><div class="org-block"><img class="org-logo is-wide" src="assets/logos/xmov.png?v=2" alt=""><div><h3 class="org" data-i18n="job.mofa.org">魔珐（上海）信息科技有限公司</h3><div class="role" data-i18n="job.mofa.title">项目专员</div></div></div><time>2022.3 – 2023.3</time></div>
-          <p class="duty" data-i18n="job.mofa.duty">同期项目组唯一技术背景 PM，短内容项目算法与硬件侧接口人，4-5 个项目并行，千万级交付</p>
+          <p class="duty" data-i18n="job.mofa.duty">千万级独立交付，同期项目组唯一技术背景 PM，项目部算法与硬件侧接口人，4-5 多项目并行</p>
           <ul>
             <li data-i18n-html="job.mofa.li1"><strong>项目管理：</strong>项目 0-1 全生命周期需求梳理、成本及风险评估、排期里程碑把控、项目信息对齐梳理及项目复盘。预估项目产能，拉齐各部门、各环节制作进度，管理客户预期。</li>
             <li data-i18n-html="job.mofa.li2"><strong>跨形态数字人交付：</strong>CG、TVC、UE 直播、数字人换头视频等。提前对齐口型、TTS、VC 的能力边界与客户预期。</li>
-            <li data-i18n="job.mofa.li3">熟悉数字人资产制作、交互逻辑及数字人相关算法，善于进行项目进度梳理。</li>
-            <li data-i18n-html="job.mofa.li4"><strong>代表项目：</strong>上海移动研究院 &amp; 广西移动数字人、OPPO 商城直播数字人、中金数字人互动大屏（交互指示与点选问答，语料库 200-300 条）、<a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>、<a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a> 等项目。虚拟人翎 Ling <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">兰蔻 CG</a>、<a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">嘉人</a>合作。</li>
+            <li data-i18n="job.mofa.li3">熟悉数字人资产制作、动捕、交互逻辑及数字人相关算法，善于进行项目进度梳理。</li>
+            <li data-i18n-html="job.mofa.li4"><strong>代表项目：</strong>上海移动研究院 &amp; 广西移动数字人、OPPO 商城直播数字人（构建数据飞轮）、中金数字人互动大屏（交互指示与点选问答，语料库 200-300 条）、<a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>、<a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a> 等项目。虚拟IP翎 Ling <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">兰蔻 CG</a>、<a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">嘉人</a>合作。</li>
           </ul>
         </div>
         <div class="job reveal" id="job-feng" data-start="2021.8" data-end="2022.2" data-tl="feng">
           <div class="job-head"><div class="org-block"><img class="org-logo is-wide" src="assets/logos/fengguo.png?v=2" alt=""><div><h3 class="org" data-i18n="job.feng.org">上海蜂果网络科技有限公司</h3><div class="role" data-i18n="job.feng.title">APM 美术项目管理</div></div></div><time>2021.8 – 2022.2</time></div>
-          <p class="duty" data-i18n="job.feng.duty">游戏美术项目管理，供应商管理&amp;拓展，版权监修，版本分支管理</p>
+          <p class="duty" data-i18n="job.feng.duty">游戏美术项目管理，供应商管理&amp;拓展，版权监修，版号包、版本分支管理</p>
           <ul>
-            <li data-i18n-html="job.feng.li1"><strong>游戏美术项目管理：</strong>独立负责 STG 项目<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》</a>、FPS 项目（3D 开放世界）、三国项目（2D）内外部美术制作进度。保证项目热更节点，识别项目风险，保证美术制作质量及时间。构建程序、策划、美术良好沟通渠道，通过敏捷管理（迭代 + 站会 + 看板）缩短制作时间 <mark>30% 以上</mark>。对版号包及测试包进行美术资源规划，建立并维护公司美术部门 TAPD 工作流。</li>
+            <li data-i18n-html="job.feng.li1"><strong>美术中台项目管理：</strong>独立负责 STG 项目<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》</a>、FPS 项目（研发项目，3D 开放世界）、三国项目（2D）内外部美术制作进度。保证项目热更节点，识别项目风险，保证美术制作质量及时间。构建程序、策划、美术良好沟通渠道，通过敏捷管理（迭代 + 站会 + 看板）缩短制作时间 <mark>30% 以上</mark>。对版号包及测试包进行美术资源规划，建立并维护公司美术部门 TAPD 工作流。</li>
             <li data-i18n-html="job.feng.li2"><strong>供应商管理：</strong>规划定向测试留存方案，2 个月建立超 <mark>300 家</mark>供应商库，为<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电》</a>、<a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener">《王牌机战》</a>、FPS 项目替换高质量原画、Spine 供应商，增加热更版本流水 <mark>20%</mark>。</li>
             <li data-i18n="job.feng.li3">迅速解决项目美术进度问题，进行美术素材预算控制；有大量优秀 2D、3D 美术供应商资源。</li>
             <li data-i18n-html="job.feng.li4"><strong>版权监修 + 版号包资源管理：</strong>《雷电：觉醒》版权监修素材管理，对监修进度进行整体排期规划，保证月度监修提交数量，根据制作效率库保证月度监修提交情况。</li>
@@ -729,7 +766,7 @@
           </button>
           <div class="case-viewport">
         <article class="case" id="case-1" role="tabpanel" aria-labelledby="tab-1">
-          <div class="case-top"><h3 data-i18n="case1.title">1｜虚拟制片产线：把报价、修改和 AI 边界收成同一套流程</h3><span class="tag" data-i18n="case1.tag">英雄电竞 · 内容矩阵技术中台</span></div>
+          <div class="case-top"><h3 data-i18n="case1.title">虚拟制片产线：把报价、修改和 AI 边界收成同一套流程</h3><span class="tag" data-i18n="case1.tag">英雄电竞 · 内容矩阵技术中台</span></div>
           <div class="label" data-i18n="case.problem">问题</div>
           <p data-i18n="case1.problem">报价靠人工逐单估算，脚本参考很难对齐，关键字段常常做到一半才补齐；修改反复来回，却看不清客户已经改了几轮、还该不该继续改。</p>
           <div class="label" data-i18n="case.decision">处理</div>
@@ -743,7 +780,7 @@
           <p data-i18n-html="case1.result">约半年经手实际入账约 <mark>120 万元</mark>（3-4 个项目），平均利润率 <mark>45%-50%</mark>。创意前期（剧本草稿、脚本参考、分镜氛围、角色三视图）沿用当时内部口径：制作提效 <mark>30%+</mark>、人天成本下降 <mark>20%+</mark>；人天基线来自飞书预估 / 实际 / 反馈人天复盘。</p>
         </article>
         <article class="case is-hidden" id="case-2" role="tabpanel" aria-labelledby="tab-2">
-          <div class="case-top"><h3 data-i18n="case2.title">2｜VTKD / VTKD2：识别不稳时先保证能玩，再让卡点可见</h3><span class="tag" data-i18n="case2.tag">英雄电竞 · Pico 4 / Quest</span></div>
+          <div class="case-top"><h3 data-i18n="case2.title">VTKD / VTKD2：识别不稳时先保证能玩，再让卡点可见</h3><span class="tag" data-i18n="case2.tag">英雄电竞 · Pico 4 / Quest</span></div>
           <div class="case-media">
             <figure>
               <img src="assets/works/vtkd.jpg" alt="VTKD 现场对战">
@@ -755,19 +792,19 @@
             </figure>
           </div>
           <div class="label" data-i18n="case.problem">问题</div>
-          <p data-i18n="case2.problem">从新加坡开发侧接手后，上海人手少。识别不准时角色会错乱，活动要跑一整天，实验室测不全那种替换强度。角色制作同时卡在看不见的并行节点上：期望一个半月完成，原画越改越多，到期交不出，却没人能提前说出卡在哪一环。</p>
+          <p data-i18n="case2.problem">从新加坡开发侧接手，需要建设上海本地开发工作流+新加坡信息互通。硬件识别不准时角色会错乱，活动要跑一整天，实验室模拟测试强度低。角色制作同时卡在看不见的并行节点上：期望一个半月完成，原画越改越多，到期交不出，却没人能提前说出卡在哪一环。</p>
           <div class="label" data-i18n="case.decision">处理</div>
           <ul>
             <li data-i18n-html="case2.li1"><strong>锁定技术路径：</strong>对比惯性动捕、摄像头动捕、光学动捕棚。摄像头场地要求高、精度达不到对战；光学棚单次移动及搭建约数万元级，不适合巡展。结论是小成本继续打磨 <a href="https://refract.gg/" target="_blank" rel="noopener">AXIS</a>。</li>
             <li data-i18n-html="case2.li2"><strong>用最小可玩包上场：</strong>内测识别 bug 多，不等识别完美。上海做版本冻结、应急和资源保障，通常派测试 + 程序去现场。</li>
-            <li data-i18n-html="case2.li3"><strong>筛减版本范围：</strong>人手紧张的第一年约 <mark>6 个可玩版本</mark>由我带头推进；<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">VTKD</a> 新增 10 个游戏角色、3 个落地场景。VTKD2 起主控可行性与需求筛减，明显完不成的在前中期砍掉。</li>
+            <li data-i18n-html="case2.li3"><strong>筛减版本范围：</strong>人手紧张的第一年 <mark>6 个可玩版本</mark>由我带头推进；<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">VTKD</a> 新增 10 个游戏角色、3 个落地场景。VTKD2 起主控可行性与需求筛减，明显完不成的在前中期砍掉。</li>
             <li data-i18n-html="case2.li4"><strong>让卡点可见：</strong>落地四级结构：<mark>版本规划 → 业务线 → 需求 → 任务</mark>，执行方自估工期，超期自动提醒。需求从策划评审走到灰度合入可玩版本。外包质量早期由我审核，后期转主美统一给出质量意见。</li>
           </ul>
           <div class="label" data-i18n="case.result">结果</div>
           <p data-i18n-html="case2.result">完成巴黎奥运会电竞周展示、新加坡乌节路快闪。工作流覆盖研发组约 <mark>30 人</mark>，每周流转约 10-15 条需求与约 20 条缺陷，外部支持 3-4 家外包。</p>
         </article>
         <article class="case is-hidden" id="case-3" role="tabpanel" aria-labelledby="tab-3">
-          <div class="case-top"><h3 data-i18n="case3.title">3｜iOS / 安卓手游：把档期、质量和供应商收成可替换产能</h3><span class="tag" data-i18n="case3.tag">蜂果 · 《雷电：觉醒》/《王牌机战》</span></div>
+          <div class="case-top"><h3 data-i18n="case3.title">iOS / 安卓手游：把档期、质量和供应商收成可替换产能</h3><span class="tag" data-i18n="case3.tag">蜂果 · 《雷电：觉醒》/《王牌机战》</span></div>
           <div class="case-media is-3">
             <figure>
               <video controls preload="none" playsinline poster="assets/cases/raiden-poster.jpg">
@@ -797,7 +834,7 @@
           <p data-i18n-html="case3.result">美术侧制作周期缩短 <mark>30% 以上</mark>；替换供应商后热更版本流水约 <mark>+20%</mark>。流水涨幅质量是主因，叠加新年版本与充值环境，不把涨幅全部算成供应商单一结果。</p>
         </article>
         <article class="case is-hidden" id="case-4" role="tabpanel" aria-labelledby="tab-4">
-          <div class="case-top"><h3 data-i18n="case4.title">4｜数字人口型 V3 → V4：先定采集与验收，再对客户承诺</h3><span class="tag" data-i18n="case4.tag">叠境数字 · 第一财经数字主播伊可</span></div>
+          <div class="case-top"><h3 data-i18n="case4.title">数字人口型 V3 → V4：先定采集与验收，再对客户承诺</h3><span class="tag" data-i18n="case4.tag">叠境数字 · 第一财经数字主播伊可</span></div>
           <div class="label" data-i18n="case.problem">问题</div>
           <p data-i18n="case4.problem">3D 口型与 2D 不同：2D 只需嘴部张合，3D 的 a / e / i / o / u 必须在模型上做足。当时线上版本口型幅度不够，客户也反馈不够准，但改进方案验证之前，不能对外承诺「可以优化」。</p>
           <div class="label" data-i18n="case.decision">处理</div>
@@ -811,7 +848,7 @@
           <p data-i18n-html="case4.result">V3 → V4 观感提升超过前三个版本的累计幅度，与直接采集效果相似度 <mark>80% 以上</mark>，客户各部门反馈真实性提升、几乎无返工。该版本为全站升级：第一财经虚拟主播直接升至最新版本，AIGC 数字人平台同步，约 3-4 组客户受益。</p>
         </article>
         <article class="case is-hidden" id="case-5" role="tabpanel" aria-labelledby="tab-5">
-          <div class="case-top"><h3 data-i18n="case5.title">5｜企业内部 RAG：能引用才答，答不上转人工</h3><span class="tag" data-i18n="case5.tag">叠境数字 · 面向全体员工的制度问答</span></div>
+          <div class="case-top"><h3 data-i18n="case5.title">企业内部 RAG：问答边界，能引用才答，答不上转人工</h3><span class="tag" data-i18n="case5.tag">叠境数字 · 面向全体员工的制度问答</span></div>
           <div class="label" data-i18n="case.problem">问题</div>
           <p data-i18n="case5.problem">制度写在手册里，入职培训过后没人记得与自己无关的条款；真正要用时才问 HR，检索和确认的成本全部压在 HRBP 身上。</p>
           <div class="label" data-i18n="case.decision">处理</div>
@@ -825,7 +862,7 @@
           <p data-i18n="case5.result">形成可引用、可拒绝、可转人工的问答策略：输出可追溯到手册来源，未召回则拒绝作答，避免幻觉与口径漂移。员工问到的是 HRBP 确认过的口径，减少培训后的重复咨询。</p>
         </article>
         <article class="case is-hidden" id="case-6" role="tabpanel" aria-labelledby="tab-6">
-          <div class="case-top"><h3 data-i18n="case6.title">6｜中金互动大屏：用点选约束回答，把前厅展示做成可验收的交互</h3><span class="tag" data-i18n="case6.tag">魔珐 · 中金前厅企业形象展示</span></div>
+          <div class="case-top"><h3 data-i18n="case6.title">中金互动大屏：用点选约束回答，把前厅展示做成可验收的交互</h3><span class="tag" data-i18n="case6.tag">魔珐 · 中金前厅企业形象展示</span></div>
           <div class="label" data-i18n="case.problem">问题</div>
           <p data-i18n="case6.problem">数字人已有包装形象，但还不是前厅可用的互动装置。开放提问当时不稳定：口型、TTS 与回答口径任一出错，都会直接砸在客户门面上。一期尚未完全结束时原 PM 离职，二期交到手上。</p>
           <div class="label" data-i18n="case.decision">处理</div>
@@ -861,22 +898,38 @@
             </svg>
           </button>
         </div>
-        <div class="label reveal" data-i18n="case.links">相关项目链接汇总</div>
-        <div class="linkbar reveal">
-          <a href="https://virtualtkd.gg/" target="_blank" rel="noopener" data-i18n="link.vtkd">VTKD 官网</a>
-          <a href="https://refract.gg/" target="_blank" rel="noopener" data-i18n="link.axis">AXIS</a>
-          <a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener" data-i18n="link.liva">保时捷虚拟人 Liva</a>
-          <a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener" data-i18n="link.iva">奇瑞 IP 虚拟人 i-va</a>
-          <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener" data-i18n="link.lancome">虚拟人翎 Ling · 兰蔻 CG</a>
-          <a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener" data-i18n="link.grazia">虚拟人翎 Ling · 嘉人</a>
-          <a href="https://raiden.beechinet.com/" target="_blank" rel="noopener" data-i18n="link.raiden">《雷电：觉醒》官网</a>
-          <a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener" data-i18n="link.ace">《王牌机战》TapTap</a>
+        <div class="label reveal" data-i18n="case.links">公开项目链接汇总</div>
+        <div class="link-groups reveal">
+          <div class="link-group is-vr">
+            <div class="link-cat" data-i18n="link.g.vr">VR &amp; 游戏</div>
+            <div class="linkbar">
+              <a href="https://virtualtkd.gg/" target="_blank" rel="noopener" data-i18n="link.vtkd">《VTKD》</a>
+              <a href="https://raiden.beechinet.com/" target="_blank" rel="noopener" data-i18n="link.raiden">《雷电》</a>
+              <a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener" data-i18n="link.ace">《王牌机战》</a>
+            </div>
+          </div>
+          <div class="link-group is-hw">
+            <div class="link-cat" data-i18n="link.g.hw">硬件研发</div>
+            <div class="linkbar">
+              <a href="https://refract.gg/" target="_blank" rel="noopener" data-i18n="link.axis">AXIS</a>
+            </div>
+          </div>
+          <div class="link-group is-vc">
+            <div class="link-cat" data-i18n="link.g.vc">虚拟内容</div>
+            <div class="linkbar">
+              <a href="https://space.bilibili.com/36081646/upload/video" target="_blank" rel="noopener" data-i18n="link.luotianyi">洛天依 3D 制片（24.05–25.02）</a>
+              <a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener" data-i18n="link.liva">保时捷虚拟人 Liva</a>
+              <a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener" data-i18n="link.iva">奇瑞 IP 虚拟人 i-va</a>
+              <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener" data-i18n="link.lancome">虚拟IP翎 Ling · 兰蔻 CG</a>
+              <a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener" data-i18n="link.grazia">虚拟IP翎 Ling · 嘉人</a>
+            </div>
+          </div>
         </div>
       </section>
       <section id="skills">
         <h2 data-i18n="skill.h2">个人技能</h2>
         <div class="skill-block reveal"><h3 data-i18n="skill.ai.h">AI / 数据</h3><p data-i18n="skill.ai.p">Cursor / Codex 日常使用，能借助 AI 产出可交互原型｜Dify 了解｜RAG 知识库问答（切片口径、召回边界、私有化部署取舍）｜评测集与回归机制（人工 0/1 评分 + 转人工边界）｜口型数据采集规格与验收｜Prompt 设计与边界约束｜Python 可读可改｜SQL / PyTorch 了解</p></div>
-        <div class="skill-block reveal"><h3 data-i18n="skill.pm.h">产品与项目</h3><p data-i18n="skill.pm.p">PMP｜飞书项目高级管理员（认证）｜ONES｜TAPD，均有 0-1 搭建研发工作流经验｜Axure｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
+        <div class="skill-block reveal"><h3 data-i18n="skill.pm.h">产品与项目</h3><p data-i18n="skill.pm.p">PMP｜飞书项目高级管理员（认证）｜ONES｜TAPD，均有 0-1 搭建研发工作流经验｜Figma｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
         <div class="skill-block reveal"><h3 data-i18n="skill.prod.h">制作理解</h3><p data-i18n="skill.prod.p">UE 内容产线｜PS / AI / ID｜3ds Max / Maya / ZBrush（资产审核）｜Pr 基础剪辑</p></div>
         <div class="skill-block reveal"><h3 data-i18n="skill.other.h">其他</h3><p data-i18n="skill.other.p">演出经纪人资格证｜CET-6｜广告设计高级（三级）｜3D 打印造型中级（四级）</p></div>
       </section>
@@ -917,10 +970,9 @@
     <div class="note-widget reveal">
       <div class="note-card">
         <div class="vw-head"><span class="vw-dot" aria-hidden="true"></span> <span data-i18n="vibe.kicker">小工具</span></div>
-        <p class="note-meta" data-i18n="vibe.meta">Vibecoding · 持续修改中</p>
+        <p class="note-meta" data-i18n="vibe.meta">Vibecoding · 优化中</p>
         <div class="vibe-list">
           <a class="vibe-proj" href="vp-agent/" target="_blank" rel="noopener">
-            <span class="vibe-idx">01</span>
             <span class="vibe-copy">
               <span class="vibe-proj-name" data-i18n="vibe.agent.name">虚拟制片拆解提效</span>
               <span class="vibe-proj-desc" data-i18n="vibe.agent.desc">简述 → 工序与人天建议 → 人确认后才下发任务</span>
@@ -928,9 +980,8 @@
             <span class="vibe-proj-go" aria-hidden="true"></span>
           </a>
           <a class="vibe-proj is-quote" href="vp-quote/" target="_blank" rel="noopener">
-            <span class="vibe-idx">02</span>
             <span class="vibe-copy">
-              <span class="vibe-proj-name" data-i18n="vibe.quote.name">快速报价</span>
+              <span class="vibe-proj-name" data-i18n="vibe.quote.name">项目快速报价</span>
               <span class="vibe-proj-desc" data-i18n="vibe.quote.desc">读取或新建报价 → 改人天与单价 → 导出完整报价</span>
             </span>
             <span class="vibe-proj-go" aria-hidden="true"></span>
@@ -942,7 +993,7 @@
       </div>
     </div>
   </div>
-  <script src="i18n.js?v=grid1"></script>
+  <script src="i18n.js?v=copy9"></script>
   <script>
     (function () {
       var rootEl = document.documentElement;

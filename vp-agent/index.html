@@ -85,7 +85,7 @@
     <div>
       <div class="kicker">拆解提效</div>
       <h1>虚拟制片拆解提效</h1>
-      <p class="sub">先拆步骤与人天，人确认后再下发。下发记录可给快速报价读取。</p>
+      <p class="sub">先拆步骤与人天，人确认后再下发。下发记录可给项目快速报价读取。</p>
     </div>
   </header>
   <nav class="tabs">
@@ -237,7 +237,7 @@
           <pre class="trace" id="final-trace"></pre>
           <p class="muted" id="dispatch-hint"></p>
           <div class="row">
-            <button class="primary" type="button" id="openQuote">去快速报价</button>
+            <button class="primary" type="button" id="openQuote">去项目快速报价</button>
             <button class="ghost" type="button" id="exportDispatch">导出下发表格</button>
             <button class="ghost" type="button" id="reset">再走一遍</button>
           </div>
@@ -494,7 +494,7 @@
       const payload = dispatchPayload();
       try { localStorage.setItem(DISPATCH_KEY, JSON.stringify(payload)); } catch (e) {}
       $("final-trace").textContent = $("trace").textContent.replace("状态：未下发", "状态：已下发");
-      $("dispatch-hint").textContent = "已写入本机下发记录，快速报价可直接读取。表格导出稍后也会接到同一份结构。";
+      $("dispatch-hint").textContent = "已写入本机下发记录，项目快速报价可直接读取。表格导出稍后也会接到同一份结构。";
       showStep(4);
     };
 
