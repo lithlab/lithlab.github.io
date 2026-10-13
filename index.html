@@ -98,7 +98,7 @@
     }
     aside {
       padding: 28px 22px; border-right: 1px solid var(--line); background: var(--side);
-      align-self: stretch;
+      align-self: stretch; overflow: visible; z-index: 2;
     }
     .side-pin {
       position: sticky; top: var(--aside-top, 0px);
@@ -150,6 +150,43 @@
     .side-block h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
     .side-block a, .side-block span { display: block; font-size: 13px; margin: 4px 0; }
     .side-block span { color: var(--ink); }
+    .contact-list {
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .side-block .contact-list a,
+    .side-block .contact-list .wx-btn {
+      margin: 0; font-size: 13px; line-height: 1.5;
+    }
+    .wx-wrap { position: relative; display: block; margin: 0; }
+    .side-block .wx-btn {
+      display: inline; width: auto; margin: 0; padding: 0; border: 0; background: transparent;
+      font: inherit; font-size: 13px; line-height: 1.5; color: var(--accent);
+      cursor: pointer; text-align: left;
+    }
+    .side-block .wx-btn:hover { text-decoration: underline; }
+    .wx-pop {
+      position: fixed; z-index: 40;
+      background: var(--panel); border: 1px solid var(--line);
+      padding: 6px; box-shadow: 0 10px 28px rgba(17, 20, 24, 0.12);
+    }
+    .wx-pop[hidden] { display: none !important; }
+    .wx-pop::before {
+      content: ""; position: absolute; left: -5px; top: 50%;
+      width: 8px; height: 8px; background: var(--panel);
+      border-left: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      transform: translateY(-50%) rotate(45deg);
+    }
+    .wx-pop img {
+      display: block; width: 112px; height: 112px;
+      image-rendering: pixelated;
+    }
+    .m .wx-pop:not([hidden]) {
+      animation: wx-pop-in .28s var(--ease-expo);
+    }
+    @keyframes wx-pop-in {
+      from { opacity: 0; transform: translate(-8px, 0); }
+      to { opacity: 1; transform: translate(0, 0); }
+    }
     .side-nav a {
       color: var(--muted); font-size: 12.5px; margin: 6px 0;
       position: relative; padding-left: 12px;
@@ -174,23 +211,35 @@
     }
     .export-block { margin-top: 14px; }
     .export-row {
-      display: grid; grid-template-columns: 1fr 1fr;
-      border: 1px solid var(--line);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
     aside .print-btn {
-      display: block; width: 100%; box-sizing: border-box; text-align: center;
-      border: 0; background: transparent;
-      color: var(--muted); padding: 7px 2px; font: inherit; font-size: 11px;
-      letter-spacing: 0.06em; cursor: pointer; text-decoration: none; white-space: nowrap;
-      transition: color .25s var(--ease-expo), background .25s var(--ease-expo);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      width: 100%; box-sizing: border-box;
+      border: 0; border-radius: 8px; padding: 9px 8px;
+      font: inherit; font-size: 11.5px; font-weight: 650; letter-spacing: 0.04em;
+      cursor: pointer; text-decoration: none; white-space: nowrap;
+      transition: transform .25s var(--ease-expo), background .25s var(--ease-expo), filter .25s var(--ease-expo), box-shadow .25s var(--ease-expo);
     }
-    aside .print-btn + .print-btn { border-left: 1px solid var(--line); }
-    aside .print-btn:hover {
-      color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, transparent);
-      text-decoration: none;
+    aside .print-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    aside a.print-btn {
+      background: var(--accent); color: var(--panel);
+      box-shadow: 0 1px 0 rgba(13, 110, 99, 0.28);
+    }
+    aside a.print-btn:hover {
+      color: var(--panel); text-decoration: none; filter: brightness(1.07); transform: translateY(-1px);
+    }
+    aside button.print-btn {
+      background: #e8f4f1; color: var(--accent);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+    aside button.print-btn:hover {
+      background: color-mix(in srgb, var(--accent) 16%, #fff);
+      text-decoration: none; transform: translateY(-1px);
     }
     .export-note {
-      margin: 6px 0 0; font-size: 10px; line-height: 1.4; color: var(--muted);
+      margin: 8px 0 0; font-size: 10px; line-height: 1.4; color: var(--muted);
+      text-align: center;
     }
     .tl-rail {
       position: absolute; left: calc(100% + 18px); top: 0; height: 0;
@@ -584,7 +633,7 @@
       .grain, .scroll-progress, .tab-ink, .px-ghost, .bg-particles, .bottom-mods, .visitor-widget, .tl-rail { display: none; }
       .m .shell, .m .reveal, .m .kicker, .portrait { opacity: 1; transform: none; animation: none; }
       .m section > h2::after { transform: scaleX(1); }
-      .export-block, .lang-switch, .side-nav, .case-tabs, .case-arrow { display: none; }
+      .export-block, .lang-switch, .side-nav, .case-tabs, .case-arrow, .wx-pop { display: none; }
       .case-stage { display: block; }
       .case-viewport { overflow: visible; height: auto !important; }
       .case.is-hidden, .case.is-sliding { display: block; position: static; transform: none; }
@@ -613,9 +662,10 @@
       .grain, .scroll-progress, .bg-particles { display: none; }
       .m .shell, .m .kicker, .m .reveal, .case.is-sliding, .tab-ink, .portrait,
       .side-nav a, .side-nav a::before, aside .print-btn, .lang-switch button, .linkbar a, .linkbar .chip, .case-tabs button,
-      .m section > h2::after, .m .tl-board, .vw-dot, .vw-dot::after {
+      .m section > h2::after, .m .tl-board, .vw-dot, .vw-dot::after, .m .wx-pop:not([hidden]) {
         animation: none; transition: none; transform: none; opacity: 1;
       }
+      .m .wx-pop:not([hidden]) { transform: none; }
       .m section > h2::after { transform: scaleX(1); }
     }
   </style>
@@ -635,8 +685,15 @@
         <p class="lede" data-i18n="lede">资深 VR 产品经理、游戏项目管理、飞书项目高级管理员、workflow 0-1 搭建、软硬件开发管理、虚拟制片/虚拟IP（AI 工作流）</p>
         <div class="side-block">
           <h2 data-i18n="contact">联系</h2>
-          <a href="mailto:1164618262@qq.com">1164618262@qq.com</a>
-          <span data-i18n="wechat">WeChat LithLii</span>
+          <div class="contact-list">
+            <a href="mailto:1164618262@qq.com">1164618262@qq.com</a>
+            <div class="wx-wrap">
+              <button type="button" class="wx-btn" aria-expanded="false" aria-controls="wx-pop" data-i18n="wechat">WeChat LithLii</button>
+              <div class="wx-pop" id="wx-pop" hidden role="dialog" aria-label="微信二维码">
+                <img src="assets/wechat-qr.png" width="112" height="112" alt="微信 LithLii 二维码" />
+              </div>
+            </div>
+          </div>
         </div>
         <div class="side-block side-nav">
           <h2 data-i18n="nav">目录</h2>
@@ -647,8 +704,14 @@
         </div>
         <div class="export-block">
           <div class="export-row">
-            <a class="print-btn" href="assets/resume-aipm.pdf" download="李筱慧_简历_AIPM.pdf" data-i18n="export.dl">下载 PDF</a>
-            <button type="button" class="print-btn" onclick="window.print()" data-i18n="export.print">打印网页</button>
+            <a class="print-btn" href="assets/resume-aipm.pdf" download="李筱慧_简历_AIPM.pdf">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" d="M8 2.2v8.1M5.1 7.6 8 10.5l2.9-2.9M3.2 13.4h9.6"/></svg>
+              <span data-i18n="export.dl">下载 PDF</span>
+            </a>
+            <button type="button" class="print-btn" onclick="window.print()">
+              <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" d="M4.4 5.2V2.7h7.2v2.5M4.2 10.6H3.3A1.1 1.1 0 0 1 2.2 9.5V6.7A1.1 1.1 0 0 1 3.3 5.6h9.4a1.1 1.1 0 0 1 1.1 1.1v2.8a1.1 1.1 0 0 1-1.1 1.1h-.9M4.4 9.2h7.2v4.1H4.4z"/></svg>
+              <span data-i18n="export.print">打印网页</span>
+            </button>
           </div>
           <p class="export-note" data-i18n="export.note">PDF 投递版 · 打印为本页排版</p>
         </div>
@@ -1003,6 +1066,42 @@
       var aside = document.querySelector('.shell > aside');
       var pin = document.querySelector('.side-pin');
       var mqNarrow = window.matchMedia('(max-width: 860px)');
+
+      (function wxPop() {
+        var wrap = document.querySelector('.wx-wrap');
+        var btn = document.querySelector('.wx-btn');
+        var pop = document.querySelector('.wx-pop');
+        if (!wrap || !btn || !pop) return;
+        function place() {
+          var r = btn.getBoundingClientRect();
+          pop.style.left = Math.round(r.right + 6) + 'px';
+          pop.style.top = Math.round(r.top + r.height / 2 - pop.offsetHeight / 2) + 'px';
+        }
+        function close() {
+          pop.hidden = true;
+          btn.setAttribute('aria-expanded', 'false');
+        }
+        function open() {
+          pop.hidden = false;
+          btn.setAttribute('aria-expanded', 'true');
+          place();
+        }
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (pop.hidden) open(); else close();
+        });
+        pop.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('click', close);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') close();
+        });
+        window.addEventListener('scroll', function () {
+          if (!pop.hidden) place();
+        }, { passive: true });
+        window.addEventListener('resize', function () {
+          if (!pop.hidden) place();
+        });
+      })();
 
       var LANG_KEY = 'lith-lang';
       var CN_REGION = { CN: 1, HK: 1, MO: 1, TW: 1 };
