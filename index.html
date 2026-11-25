@@ -145,7 +145,9 @@
     html[data-lang="en"]:not(.lang-ready) .bottom-mods {
       opacity: 0 !important; animation: none !important;
     }
-    .lede { color: var(--muted); font-size: 13px; margin: 0 0 8px; }
+    .lede { color: var(--muted); font-size: 13px; line-height: 1.85; margin: 12px 0 20px; text-wrap: pretty; overflow-wrap: normal; word-break: normal; }
+    .intro-phrase {display:inline-block;}
+    .intro-paragraph {display:block;margin-top:.65em;}
     .side-block { margin: 18px 0; }
     .side-block h2 { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; }
     .side-block a, .side-block span { display: block; font-size: 13px; margin: 4px 0; }
@@ -668,7 +670,18 @@
       .m .wx-pop:not([hidden]) { transform: none; }
       .m section > h2::after { transform: scaleX(1); }
     }
-  </style>
+
+.internship > summary {cursor:pointer; list-style:none;}
+.internship > summary::-webkit-details-marker {display:none;}
+.internship-top {display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px;}
+.internship-label {font-size:12px;font-weight:400;color:var(--muted, #63707a);}
+.internship-toggle {display:inline-flex;align-items:center;gap:10px;font-size:12px;color:var(--muted, #63707a);}
+.internship-arrow {display:inline-block;transition:transform .18s ease;}
+.internship[open] .internship-arrow {transform:rotate(90deg);}
+
+
+.internship > summary:focus-visible {outline:2px solid #356e68;outline-offset:5px;}
+</style>
 </head>
 <body>
   <script>document.documentElement.classList.add('m');</script>
@@ -682,11 +695,11 @@
         <img class="portrait" src="assets/portrait.jpg" alt="李筱慧" />
         <div class="kicker">AI PM · SHANGHAI</div>
         <h1 data-i18n="name">李筱慧</h1>
-        <p class="lede" data-i18n="lede">资深 VR 产品经理、游戏项目管理、飞书项目高级管理员、workflow 0-1 搭建、软硬件开发管理、虚拟制片/虚拟IP（AI 工作流）</p>
+        <p class="lede" data-i18n-html="lede">具备计算机技术背景的<span class="intro-phrase">产品与项目 PM</span>，负责<span class="intro-phrase">游戏全流程</span>、<span class="intro-phrase">软硬件开发管理</span>、<span class="intro-phrase">研发工作流搭建</span>及<span class="intro-phrase">虚拟制片 AI 流程</span>。<span class="intro-paragraph">拥有 <span class="intro-phrase">AIGC 平台</span>、<span class="intro-phrase">算法迭代</span>与 <span class="intro-phrase">RAG 知识库问答</span>项目经验。</span></p>
         <div class="side-block">
           <h2 data-i18n="contact">联系</h2>
           <div class="contact-list">
-            <a href="mailto:1164618262@qq.com">1164618262@qq.com</a>
+            <a href="mailto:15000918195@163.com">15000918195@163.com</a>
             <div class="wx-wrap">
               <button type="button" class="wx-btn" aria-expanded="false" aria-controls="wx-pop" data-i18n="wechat">WeChat LithLii</button>
               <div class="wx-pop" id="wx-pop" hidden role="dialog" aria-label="微信二维码">
@@ -704,7 +717,7 @@
         </div>
         <div class="export-block">
           <div class="export-row">
-            <a class="print-btn" href="assets/resume-aipm.pdf" download="李筱慧_简历_AIPM.pdf">
+            <a class="print-btn" href="assets/resume-pm.pdf?v=20261125" download="李筱慧_简历_PM.pdf">
               <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="square" d="M8 2.2v8.1M5.1 7.6 8 10.5l2.9-2.9M3.2 13.4h9.6"/></svg>
               <span data-i18n="export.dl">下载 PDF</span>
             </a>
@@ -744,15 +757,15 @@
       <section id="exp">
         <h2 data-i18n="exp.h2">工作经历</h2>
         <div class="job reveal" id="job-hero" data-start="2024.5" data-end="2026.5" data-tl="hero">
-          <div class="job-head"><div class="org-block"><img class="org-logo is-stack" src="assets/logos/hero.png?v=2" alt=""><div><h3 class="org" data-i18n="job.hero.org">英雄电竞 HeroEsports（胤风子内容矩阵 / 战略研发事业部）</h3><div class="role" data-i18n="job.hero.title">资深产品经理</div></div></div><time>2024.5 – 2026.5</time></div>
-          <p class="duty" data-i18n="job.hero.duty">VR游戏产品全流程，飞书项目workflow 0-1搭建，软硬件开发，虚拟制片（AI工作流）</p>
+          <div class="job-head"><div class="org-block"><img class="org-logo is-stack" src="assets/logos/hero.png?v=2" alt=""><div><h3 class="org" data-i18n="job.hero.org">英雄电竞 HeroEsports（胤风子内容矩阵 / 战略研发事业部）</h3><div class="role" data-i18n="job.hero.title">资深产品 PM</div></div></div><time>2024.5 – 2026.5</time></div>
+          <p class="duty" data-i18n="job.hero.duty">VR 游戏产品全流程，飞书项目 workflow 0-1 搭建，软硬件开发管理，虚拟制片（AI）工作流搭建</p>
           <ul>
             <li data-i18n-html="job.hero.li1"><strong>Workflow 搭建：</strong>前期搭建 ONES，后续搬迁更新至飞书项目。0-1 搭建游戏需求开发、美术资源 2/3D、项目工时管理、缺陷修复，完整 workflow。</li>
-            <li data-i18n-html="job.hero.li2">主笔四级结构（<mark>版本规划 → 业务线 → 需求 → 任务</mark>）并推动落地，覆盖约 <mark>30 人</mark>研发组、每周约 10-15 条需求流转与 20 条缺陷、多家供应商。根据部门实际使用情况更新及维护流程，进行全部门使用培训，固定效率复盘，完成整体工作流提效。（案例获得飞书项目社区高级管理员认证）</li>
-            <li data-i18n-html="job.hero.li3"><strong>VR 游戏产品：</strong>管理上海部门本地<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">《VTKD》</a>软硬件开发。合作新加坡团队联合运营游戏商业化；从新加坡开发侧接手后，在上海独立拉起需求，一年迭代约 <mark>6 个可玩版本</mark>，新增 <mark>10 游戏角色、3 落地场景</mark>。管理《VTKD2》（未上线）内部项目研发及其他开发需求、版本需求、版本更新、会议管理、供应商合作。</li>
-            <li data-i18n="job.hero.li4">项目完成巴黎奥运会电竞周展示、新加坡乌节路快闪活动。</li>
-            <li data-i18n-html="job.hero.li5"><strong>自研硬件开发管理：</strong><a href="https://refract.gg/" target="_blank" rel="noopener">AXIS</a> 自研惯性动捕硬件，对比测试惯性动捕、摄像头动捕、光学动捕棚三条路线后确定技术路径。</li>
-            <li data-i18n-html="job.hero.li6"><strong>虚拟制片 &amp; 产线管理：</strong>内容矩阵技术研发部 PM 负责人，标准化报价流程与项目信息表，加入并规范 AI 在创意前期的可用边界与终稿审核红线。兼顾双部门支援技术中台的约半年，经手实际入账约 <mark>120 万元</mark>（3-4 个项目），优化平均利润率 <mark>45%-50%</mark>，制作提效 <mark>30%+</mark>，人天成本下降 <mark>20%+</mark>。</li>
+            <li style="list-style: none" data-i18n-html="job.hero.li2">主笔四级结构（<mark>版本规划 → 业务线 → 需求 → 任务</mark>）并推动落地，覆盖约 <mark>30 人</mark>研发组、每周跟进约 10-15 条需求流转与 20 条缺陷、多家供应商。根据部门实际使用情况更新及维护流程。进行全部门使用培训，固定效率复盘。完成整体工作流提效。（<strong>案例获得飞书项目社区高级管理员认证</strong>）</li>
+            <li data-i18n-html="job.hero.li3"><strong>VR 游戏产品项目管理：</strong>管理上海部门<a href="https://virtualtkd.gg/" target="_blank" rel="noopener">《VTKD》</a>软硬件开发，统筹本地部门资源，与新加坡团队联合推进游戏本地化、商业化。接手后在上海独立拉起需求团队，一年迭代约 <mark>6 个可玩版本</mark>，新增 <mark>10 个游戏角色、3 个落地场景</mark>。配合《VTKD2》（未上线）制作人管理内部研发、美术需求、版本里程碑、会议及供应商合作，把控关键节点验收。</li>
+            <li data-i18n="job.hero.li4">项目完成巴黎奥运会电竞周展示、新加坡乌节路快闪活动（线下体验）。</li>
+            <li data-i18n-html="job.hero.li5"><strong>自研硬件开发管理：</strong>负责 <a href="https://refract.gg/" target="_blank" rel="noopener">AXIS</a> 自研惯性动捕硬件开发管理，对比惯性动捕、摄像头动捕、光学动捕棚三条路线后确定技术路径，管理开发迭代及配合游戏包体的硬件开发里程碑。</li>
+            <li data-i18n-html="job.hero.li6"><strong>虚拟制片 AI 流程与产线管理：</strong>担任内容矩阵技术研发部 PM 负责人，管理 UE、Maya PV 产线。从 0 到 1 建立标准化报价流程与项目信息表，规范 AI 在创意前期的可用边界与终稿审核红线。兼顾双部门、支援技术中台的约半年，经手制片项目实际入账约 <mark>120 万元</mark>（3–4 个项目），优化平均利润率 <mark>45%–50%</mark>，制作提效 <mark>30%+</mark>，人天成本下降 <mark>20%+</mark>。</li>
           </ul>
         </div>
         <div class="job reveal" id="job-deemos" data-start="2023.7" data-end="2024.1" data-tl="deemos">
@@ -760,38 +773,38 @@
           <p class="duty" data-i18n="job.deemos.duty">AIGC 平台（B 端成片），算法项目迭代，RAG 知识库问答</p>
           <ul>
             <li data-i18n-html="job.deemos.li1"><strong>项目管理体系建设：</strong>对接 VP，作为部门项目管理负责人，梳理搭建数字人业务线项目管理体系；负责项目周会内容梳理及阶段成果 review，组织内外部关键节点评审；独立完成完整项目方案规划、成本评估、项目执行（采购、质量审核、风险管理、干系人沟通）、项目收尾全流程搭建，创建项目资料库。</li>
-            <li data-i18n-html="job.deemos.li2"><strong>AIGC 平台开发与管理：</strong>PC 端 H5 内容生成平台，负责整个产品模块的需求与排期、用户客制化需求收集、用户反馈数据分析、竞品动态跟踪；负责内部开发优先级排期、功能测试情况及管理后台账号使用数据。</li>
-            <li data-i18n-html="job.deemos.li3"><strong>算法项目：</strong>【叠境 × SMG 第一财经 3D 数字主播伊可】口型算法迭代。通过历史项目经验建议团队增强口型数据采集与更新验收标准，生成更准确的虚拟人算法口型（landmark → 3D 人脸关键点），组织算法专家 QC 保障迭代效果，在 V3-V4 版本中，虚拟人口型准确度大幅提升。【企业内部 RAG 知识库问答】向量检索 + 大模型作答的制度问答产品，负责切片口径、答与不答的边界、评测集与更新回归机制。</li>
+            <li data-i18n-html="job.deemos.li2"><strong>AIGC 平台产品：</strong>PC 端 H5 内容生成平台，负责整个 H5 产品模块的需求与排期，用户客制化需求收集、用户反馈数据分析，竞品动态跟踪；负责内部开发优先级排期、功能测试情况，管理后台账号使用数据。</li>
+            <li data-i18n-html="job.deemos.li3"><strong>算法项目迭代：</strong>【叠境 × SMG 第一财经 3D 数字主播伊可】口型算法迭代。通过历史项目经验建议团队增强口型数据采集与更新验收标准，生成更准确的虚拟人算法口型（landmark → 3D 人脸关键点），组织算法专家 QC 保障迭代效果，在 V3-V4 版本中，虚拟人口型准确度大幅提升。【企业内部 RAG 知识库问答】向量检索 + 大模型作答的制度问答产品，负责切片口径、答与不答的边界、评测集与更新回归机制。</li>
           </ul>
         </div>
         <div class="job reveal" id="job-mofa" data-start="2022.3" data-end="2023.3" data-tl="mofa">
-          <div class="job-head"><div class="org-block"><img class="org-logo is-wide" src="assets/logos/xmov.png?v=2" alt=""><div><h3 class="org" data-i18n="job.mofa.org">魔珐（上海）信息科技有限公司</h3><div class="role" data-i18n="job.mofa.title">项目专员</div></div></div><time>2022.3 – 2023.3</time></div>
+          <div class="job-head"><div class="org-block"><img class="org-logo is-wide" src="assets/logos/xmov.png?v=2" alt=""><div><h3 class="org" data-i18n="job.mofa.org">魔珐（上海）信息科技有限公司</h3><div class="role" data-i18n="job.mofa.title">PM</div></div></div><time>2022.3 – 2023.3</time></div>
           <p class="duty" data-i18n="job.mofa.duty">千万级独立交付，同期项目组唯一技术背景 PM，项目部算法与硬件侧接口人，4-5 多项目并行</p>
           <ul>
             <li data-i18n-html="job.mofa.li1"><strong>项目管理：</strong>项目 0-1 全生命周期需求梳理、成本及风险评估、排期里程碑把控、项目信息对齐梳理及项目复盘。预估项目产能，拉齐各部门、各环节制作进度，管理客户预期。</li>
             <li data-i18n-html="job.mofa.li2"><strong>跨形态数字人交付：</strong>CG、TVC、UE 直播、数字人换头视频等。提前对齐口型、TTS、VC 的能力边界与客户预期。</li>
             <li data-i18n="job.mofa.li3">熟悉数字人资产制作、动捕、交互逻辑及数字人相关算法，善于进行项目进度梳理。</li>
-            <li data-i18n-html="job.mofa.li4"><strong>代表项目：</strong>上海移动研究院 &amp; 广西移动数字人、OPPO 商城直播数字人（构建数据飞轮）、中金数字人互动大屏（交互指示与点选问答，语料库 200-300 条）、<a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>、<a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a> 等项目。虚拟IP翎 Ling <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">兰蔻 CG</a>、<a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">嘉人</a>合作。</li>
+            <li data-i18n-html="job.mofa.li4"><strong>重点项目：</strong>上海移动研究院 &amp; 广西移动数字人、OPPO 商城直播数字人（构建数据飞轮）、中金数字人互动大屏（交互指示与点选问答，语料库 200-300 条）、<a href="https://www.xiaohongshu.com/user/profile/63c24a3d0000000026006e2d?xhsshare=CopyLink&amp;appuid=58e5d38150c4b4075583b492&amp;apptime=1708495306" target="_blank" rel="noopener">保时捷虚拟人 Liva</a>、<a href="https://huaban.com/boards/83789180" target="_blank" rel="noopener">奇瑞 IP 虚拟人 i-va</a> 等项目。虚拟IP翎 Ling <a href="http://m.weibo.cn/status/4805966232816708" target="_blank" rel="noopener">兰蔻 CG</a>、<a href="https://www.xiaohongshu.com/explore/62ab06fe000000002103e185?xsec_token=CBNORLQ4HODe4ckV3MT3OtsmH1ZriCD93oVm9npQqyV3U=&amp;xsec_source=app_share" target="_blank" rel="noopener">嘉人</a>合作。</li>
           </ul>
         </div>
         <div class="job reveal" id="job-feng" data-start="2021.8" data-end="2022.2" data-tl="feng">
           <div class="job-head"><div class="org-block"><img class="org-logo is-wide" src="assets/logos/fengguo.png?v=2" alt=""><div><h3 class="org" data-i18n="job.feng.org">上海蜂果网络科技有限公司</h3><div class="role" data-i18n="job.feng.title">APM 美术项目管理</div></div></div><time>2021.8 – 2022.2</time></div>
           <p class="duty" data-i18n="job.feng.duty">游戏美术项目管理，供应商管理&amp;拓展，版权监修，版号包、版本分支管理</p>
           <ul>
-            <li data-i18n-html="job.feng.li1"><strong>美术中台项目管理：</strong>独立负责 STG 项目<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》</a>、FPS 项目（研发项目，3D 开放世界）、三国项目（2D）内外部美术制作进度。保证项目热更节点，识别项目风险，保证美术制作质量及时间。构建程序、策划、美术良好沟通渠道，通过敏捷管理（迭代 + 站会 + 看板）缩短制作时间 <mark>30% 以上</mark>。对版号包及测试包进行美术资源规划，建立并维护公司美术部门 TAPD 工作流。</li>
+            <li data-i18n-html="job.feng.li1"><strong>美术中台项目管理：</strong>独立负责 STG 项目<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电：觉醒》</a>、FPS 项目（研发项目，3D 开放世界）、三国项目（2D）内外部美术制作进度。保证项目热更节点，识别项目风险，保证美术制作质量及时间。构建程序、策划、美术跨部门良好沟通渠道，在关键节点建立评审机制，通过敏捷管理（迭代 + 站会 + 看板）缩短制作时间 <mark>30% 以上</mark>。对版号包及测试包进行美术资源规划，建立并维护公司美术部门 TAPD 工作流。</li>
             <li data-i18n-html="job.feng.li2"><strong>供应商管理：</strong>规划定向测试留存方案，2 个月建立超 <mark>300 家</mark>供应商库，为<a href="https://raiden.beechinet.com/" target="_blank" rel="noopener">《雷电》</a>、<a href="https://www.taptap.cn/app/56737" target="_blank" rel="noopener">《王牌机战》</a>、FPS 项目替换高质量原画、Spine 供应商，增加热更版本流水 <mark>20%</mark>。</li>
             <li data-i18n="job.feng.li3">迅速解决项目美术进度问题，进行美术素材预算控制；有大量优秀 2D、3D 美术供应商资源。</li>
             <li data-i18n-html="job.feng.li4"><strong>版权监修 + 版号包资源管理：</strong>《雷电：觉醒》版权监修素材管理，对监修进度进行整体排期规划，保证月度监修提交数量，根据制作效率库保证月度监修提交情况。</li>
           </ul>
         </div>
-        <div class="job reveal" id="job-ying" data-start="2020.7" data-end="2021.4" data-tl="ying">
-          <div class="job-head"><div class="org-block"><img class="org-logo is-mark" src="assets/logos/yingchuang.png" alt=""><div><h3 class="org org-with-badge"><span data-i18n="job.ying.org">上海影创信息科技有限公司</span><span class="job-badge" data-i18n="job.ying.badge">实习</span></h3><div class="role" data-i18n="job.ying.title">产品经理</div></div></div><time>2020.7 – 2021.4</time></div>
+        <details class="job reveal internship" id="job-ying" data-start="2020.7" data-end="2021.4" data-tl="ying">
+          <summary><span class="internship-top"><span class="internship-label" data-i18n="internship.label">实习经历</span><span class="internship-toggle"><span data-i18n="internship.toggle">点击展开 / 收起</span> <span class="internship-arrow" aria-hidden="true">▸</span></span></span><div class="job-head"><div class="org-block"><img class="org-logo is-mark" src="assets/logos/yingchuang.png" alt=""><div><h3 class="org org-with-badge"><span data-i18n="job.ying.org">上海影创信息科技有限公司</span></h3><div class="role" data-i18n="job.ying.title">产品经理</div></div></div><time>2020.7 – 2021.4</time></div></summary>
           <ul>
             <li data-i18n-html="job.ying.li1"><strong>VR 项目执行：</strong>参与【高通影创联合创新中心】（南昌 VR 产业基地）、【红谷滩 VR 数字化教室】等千万级项目的策划及落地实施，通过对里程碑质量控制，精确保证项目的交付时间。</li>
             <li data-i18n-html="job.ying.li2"><strong>风险识别：</strong>合作销售及产品研发部门分析设备痛点，制定南昌分公司部分产品营销策略；与程序部门沟通，对产品内相关应用提出迭代及流程优化建议。</li>
             <li data-i18n-html="job.ying.li3"><strong>需求分析及用户运营：</strong>与设计、售前部门沟通，制作《K12 行业解决方案》《无人机行业解决方案》《煤炭行业解决方案》；提出相关折页需求，参加相关 ToB 展览，增长产品知名度，后续用户回访量达到 <mark>75%</mark>。</li>
           </ul>
-        </div>
+        </details>
       </section>
       <section id="cases">
         <h2 data-i18n="case.h2">主要项目案例</h2>
@@ -991,9 +1004,9 @@
       </section>
       <section id="skills">
         <h2 data-i18n="skill.h2">个人技能</h2>
-        <div class="skill-block reveal"><h3 data-i18n="skill.ai.h">AI / 数据</h3><p data-i18n="skill.ai.p">Cursor / Codex 日常使用，能借助 AI 产出可交互原型｜Dify 了解｜RAG 知识库问答（切片口径、召回边界、私有化部署取舍）｜评测集与回归机制（人工 0/1 评分 + 转人工边界）｜口型数据采集规格与验收｜Prompt 设计与边界约束｜Python 可读可改｜SQL / PyTorch 了解</p></div>
-        <div class="skill-block reveal"><h3 data-i18n="skill.pm.h">产品与项目</h3><p data-i18n="skill.pm.p">PMP｜飞书项目高级管理员（认证）｜ONES｜TAPD，均有 0-1 搭建研发工作流经验｜Figma｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
-        <div class="skill-block reveal"><h3 data-i18n="skill.prod.h">制作理解</h3><p data-i18n="skill.prod.p">UE 内容产线｜PS / AI / ID｜3ds Max / Maya / ZBrush（资产审核）｜Pr 基础剪辑</p></div>
+        <div class="skill-block reveal"><h3 data-i18n="skill.ai.h">AI / 数据</h3><p data-i18n="skill.ai.p">Cursor / Codex 日常使用，能借助 AI 产出可交互原型｜Dify 了解｜RAG 知识库问答（切片口径、召回边界、私有化部署）｜评测集与回归机制（人工 0/1 评分 + 转人工边界）｜口型数据采集规格与验收｜Prompt 设计与边界约束｜Python 可读可改｜SQL / PyTorch 了解</p></div>
+        <div class="skill-block reveal"><h3 data-i18n="skill.pm.h">产品与项目</h3><p data-i18n-html="skill.pm.p"><strong>PMP</strong>｜飞书项目高级管理员 / ONES / TAPD / Jira，均有 0-1 搭建与优化研发工作流经验<br>Figma｜需求边界与验收标准定义｜优先级与版本筛减｜供应商与产能约束｜报价与成本口径｜敏捷管理</p></div>
+        <div class="skill-block reveal"><h3 data-i18n="skill.prod.h">制作理解</h3><p data-i18n="skill.prod.p">UE&amp;Maya 内容产线｜PS / AI / ID｜3ds Max / Maya / ZBrush（资产审核）｜Pr 基础剪辑</p></div>
         <div class="skill-block reveal"><h3 data-i18n="skill.other.h">其他</h3><p data-i18n="skill.other.p">演出经纪人资格证｜CET-6｜广告设计高级（三级）｜3D 打印造型中级（四级）</p></div>
       </section>
       <footer class="reveal">
@@ -1027,7 +1040,7 @@
       </div>
       <div class="vw-meta">
         <span><span data-i18n="vw.from">Visiting from: </span><b id="vw-from">定位中…</b></span>
-        <span data-i18n="vw.updated">Content last updated: Sep 16, 2026</span>
+        <span data-i18n="vw.updated">Content last updated: Nov 25, 2026</span>
       </div>
     </div>
     <div class="note-widget reveal">
@@ -1056,7 +1069,7 @@
       </div>
     </div>
   </div>
-  <script src="i18n.js?v=copy9"></script>
+  <script src="i18n.js?v=20261125-en2"></script>
   <script>
     (function () {
       var rootEl = document.documentElement;
