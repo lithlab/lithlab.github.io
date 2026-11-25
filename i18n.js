@@ -6,7 +6,7 @@ window.LITH_I18N = {
     name: "Xiaohui Li",
     docTitle: "Xiaohui Li · AI PM",
     docDesc: "Xiaohui Li · AI PM · VR game product / workflow design / virtual production",
-    lede: "Product and project PM with a computer science background, managing end-to-end game development, hardware and software delivery, R&D workflows, and AI workflows for virtual production.<span class=\"intro-paragraph\">Experience with AIGC platforms, algorithm iteration, and RAG knowledge-base Q&A.</span>",
+    lede: "Product and project PM with a computer science background managing end-to-end game development, hardware and software delivery, R&D workflows, and AI workflows for virtual production.<span class=\"intro-paragraph\">Experience with AIGC platforms, algorithm iteration, and RAG knowledge-base Q&A.</span>",
     contact: "Contact",
     wechat: "WeChat LithLii",
     nav: "Contents",
